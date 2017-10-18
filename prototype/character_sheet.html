@@ -1,0 +1,583 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+    <title>Character Sheet</title>
+</head>
+<body>
+    <div id="bound-context" class="container">
+        <div class="row">
+            <div class="col-md-4 col-12 character-name-container">
+                <div class="character-name-inner-container">
+                    <span class="character-name">
+                        {{character.name}}
+                    </span>
+                </div>
+                <div class="character-name-label">
+                    Character Name
+                </div>
+            </div>
+            <div class="col-md-8 col-12 character-top-bar-container">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.class}} {{character.level}}
+                        </div>
+                        <div class="top-bar-label">
+                            Class &amp; Level
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.background}}
+                        </div>
+                        <div class="top-bar-label">
+                            Background
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.playerName}}
+                        </div>
+                        <div class="top-bar-label">
+                            Player Name
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.race}}
+                        </div>
+                        <div class="top-bar-label">
+                            Race
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.alignment}}
+                        </div>
+                        <div class="top-bar-label">
+                            Alignment
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="top-bar-text">
+                            {{character.experience}}
+                        </div>
+                        <div class="top-bar-label">
+                            Experience
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="row">
+                    <div class="col-12 col-md-4 attribute-container">
+                        <div class="row">
+                            <div class="col-md-12 col-2" v-for="attribute in character.attributes">
+                                <div class="attribute-box">
+                                    <div class="attribute-name">
+                                        {{attribute.name}}
+                                    </div>
+                                    <div class="attribute-amount">
+                                        {{attribute.amount}}
+                                    </div>
+                                    <div class="attribute-modifier">
+                                        {{attribute.modifier}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="row">
+                            <div class="col-12 inspiration-container">
+                                <div class="inspiration-check-box">
+                                    <span v-show="character.hasInspiration">X</span>
+                                </div>
+                                <div class="inspiration-label-box">
+                                    <div class="inspiration-label">
+                                        Inspiration
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="col-12 proficiency-bonus-container">
+                                <div class="proficiency-box">
+                                    {{character.proficiencyBonus}}
+                                </div>
+                                <div class="proficiency-label-box">
+                                    <div class="proficiency-label">
+                                        Proficiency Bonus
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 saving-throws-container">
+                                <div class="row">
+                                    <div class="col-12" v-for="savingThrow in character.savingThrows">
+                                        <div class="saving-throw-bubble" v-bind:class="{ proficient: savingThrow.isProficient }">
+                                        </div>
+                                        <div class="saving-throw-modifier">
+                                            {{savingThrow.modifier}}
+                                        </div>
+                                        <div class="saving-throw-label">
+                                            {{savingThrow.name}}
+                                        </div>
+                                    </div>
+                                    <div class="col-12 saving-throws-label">
+                                        Saving Throws
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 skills-container">
+                                <div class="row">
+                                    <div class="col-12" v-for="skill in character.skills">
+                                        {{skill.name}}
+                                        Prof: {{skill.isProficient}}
+                                        Mod: {{skill.modifier}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 passive-perception-container">
+                        Passive Perception {{character.passivePerception}}
+                    </div>
+                    <div class="col-12 proficiencies-container">
+                        <div class="row">
+                            <div class="col-12" v-for="item in character.proficienciesAndLanguages">
+                                {{item.description}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="row">
+                    <div class="col-4 armor-class-container">
+                        {{character.armorClass}}AC
+                    </div>
+                    <div class="col-4 initiative-container">
+                        {{character.initiative}} Initiative
+                    </div>
+                    <div class="col-4 speed-container">
+                        {{character.speed}} Speed
+                    </div>
+                    <div class="col-12 health-points-container">
+                        Max HP: {{character.health.maximum}}<br />
+                        Current: {{character.health.current}}
+                    </div>
+                    <div class="col-12 temptorary-health-points-container">
+                        Temporary HP: {{character.health.temporary}}
+                    </div>
+                    <div class="col-6 hit-dice-container">
+                        Hit Dice <br />
+                        Total: {{character.health.hitDiceTotal}}<br />
+                        {{character.health.hitDiceCurrent}}
+                    </div>
+                    <div class="col-6 death-saves-container">
+                        Death Saves <br />
+                        Successes: {{character.health.deathSaves.successCount}}<br />
+                        Failures: {{character.health.deathSaves.failCount}}
+                    </div>
+                    <div class="col-12 attacks-and-spellcasting-container">
+                        <div class="row">
+                            <div class="col-12 weapons-list-container" v-for="weapon in character.inventory.weapons">
+                                <div class="row">
+                                    <div class="col-5">{{weapon.name}}</div>
+                                    <div class="col-2">{{weapon.attackModifier}}</div>
+                                    <div class="col-5">{{weapon.damage}}</div>
+                                </div>
+                            </div>
+                            <div class="col-12 attacks-list-container">
+                                Attacks &amp; Spellcasting
+                                <div class="row">
+                                    <div class="col-12" v-for="attack in character.attacksAndSpellcasting">
+                                        {{attack.name}} {{attack.description}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 inventory-container">
+                        CP: {{character.inventory.currency.copper}}
+                        SP: {{character.inventory.currency.silver}}
+                        EP: {{character.inventory.currency.electrum}}
+                        GP: {{character.inventory.currency.gold}}
+                        PP: {{character.inventory.currency.platinum}}
+                        <div class="row">
+                            <div class="col-12" v-for="item in character.inventory.items">
+                                {{item.name}}<br />
+                                {{item.description}}<br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="row">
+                    <div class="col-3 col-md-12 personality-traits-container">
+                        Personality Traits<br />
+                        {{character.description.personalityTraits}}
+                    </div>
+                    <div class="col-3 col-md-12">
+                        Ideals <br />
+                        {{character.description.ideals}}
+                    </div>
+                    <div class="col-3 col-md-12">
+                        Bonds<br />
+                        {{character.description.bonds}}
+                    </div>
+                    <div class="col-3 col-md-12">
+                        Flaws<br />
+                        {{character.description.flaws}}
+                    </div>
+                    <div class="col-12 features-and-traits-container">
+                        Features &amp; Traits<br />
+                        <div class="row">
+                            <div class="col-12" v-for="feature in character.features">
+                                {{feature.name}}: {{feature.description}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /*div {
+            border: 1px solid #bbb;
+        }*/
+
+        .character-name-container {
+            min-height: 5rem;
+        }
+
+            .character-name-container .character-name-inner-container {
+                margin-top: 1rem;
+                border: 1px solid black;
+                padding: 0 2rem;
+                text-align: center;
+            }
+
+            .character-name-container .character-name-label {
+                font-size: .6rem;
+                text-transform: uppercase;
+            }
+
+            .character-name-container .character-name {
+                font-size: 1.4rem;
+            }
+
+
+
+        .character-top-bar-container {
+            min-height: 5rem;
+            border: 1px solid black;
+            padding: .3rem 1rem;
+        }
+
+            .character-top-bar-container .top-bar-text {
+                text-transform: capitalize;
+                font-size: 1rem;
+                border-bottom: 1px solid black;
+                text-wrap: none;
+            }
+
+            .character-top-bar-container .top-bar-label {
+                font-size: .6rem;
+                text-transform: uppercase;
+            }
+
+        .top-bar-spacer {
+            margin-bottom: 1rem;
+        }
+
+        .attribute-container {
+            background-color: #eee;
+            padding: .5rem;
+            border-radius: .5rem;
+        }
+
+            .attribute-container .attribute-box {
+                box-sizing: border-box;
+                border: 1px solid black;
+                border-radius: .3rem;
+                margin-bottom: .5rem;
+                background-color: white;
+            }
+
+            .attribute-container .attribute-name {
+                text-transform: uppercase;
+                font-size: .5rem;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .attribute-container .attribute-amount {
+                font-size: 1.4rem;
+                text-align: center;
+            }
+
+            .attribute-container .attribute-modifier {
+                font-size: .8rem;
+                text-align: center;
+                border-top: 1px solid #808080;
+            }
+
+
+        .inspiration-container {
+        }
+
+            .inspiration-container .inspiration-check-box {
+                height: 2rem;
+                width: 2rem;
+                text-align: center;
+                border: 1px solid black;
+                float: left;
+                padding-top: .2rem;
+            }
+
+            .inspiration-container .inspiration-label-box {
+                padding-left: 2rem;
+                padding-top: .3rem;
+            }
+
+            .inspiration-container .inspiration-label {
+                border: 1px solid black;
+                border-left: none;
+                font-size: .6rem;
+                text-transform: uppercase;
+                font-weight: bold;
+                text-align: center;
+                padding: .2rem .5rem;
+            }
+
+        .proficiency-bonus-container {
+            margin-top: .2rem;
+        }
+
+            .proficiency-bonus-container .proficiency-box {
+                border-radius: 2rem;
+                height: 2rem;
+                width: 2rem;
+                text-align: center;
+                border: 1px solid black;
+                float: left;
+                padding-top: .2rem;
+            }
+
+            .proficiency-bonus-container .proficiency-label-box {
+                padding-left: 1.7rem;
+                padding-top: .3rem;
+            }
+
+            .proficiency-bonus-container .proficiency-label {
+                border: 1px solid black;
+                border-left: none;
+                font-size: .56rem;
+                text-transform: uppercase;
+                font-weight: bold;
+                text-align: center;
+                padding-top: .2rem;
+                min-height: 1.4rem;
+            }
+
+        .saving-throws-container {
+            border: 1px solid black;
+            margin-top: .25rem;
+        }
+
+        .saving-throws-label {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: .6rem;
+            font-weight: bold;
+        }
+
+        .saving-throw-bubble {
+            margin-top: .25rem;
+            margin-right: .25rem;
+            float: left;
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid black;
+            border-radius: .5rem;
+        }
+
+        .saving-throw-label {
+            font-size: .9rem;
+            text-align: left;
+        }
+
+        .saving-throw-modifier {
+            float: left;
+            border-bottom: 1px solid black;
+            min-width: 1.5rem;
+            text-align: center;
+            margin-right: .25rem;
+        }
+        .proficient {
+            background-color: black;
+        }
+    </style>
+
+    <script>
+
+        var testCharacterData = {
+            name: 'toji',
+            class: 'wizard',
+            level: '7',
+            background: 'something?',
+            playerName: 'sean',
+            race: 'Forest Gnome',
+            alignment: 'choatic-neutral',
+            experience: 'Milestone(N/A)',
+            attributes: [{
+                name: 'Strength',
+                amount: '8',
+                modifier: '-1',
+            }, {
+                name: 'Dexterity',
+                amount: '8',
+                modifier: '-1',
+            }, {
+                name: 'Constitution',
+                amount: '8',
+                modifier: '-1',
+            }, {
+                name: 'Intelligence',
+                amount: '8',
+                modifier: '-1',
+            }, {
+                name: 'Wisdom',
+                amount: '8',
+                modifier: '-1',
+            }, {
+                name: 'Charisma',
+                amount: '8',
+                modifier: '-1',
+            }],
+            hasInspiration: true,
+            proficiencyBonus: '+3',
+            savingThrows: [{
+                name: 'Strength',
+                isProficient: true,
+                modifier: '-1'
+            },
+            {
+                name: 'Dexterity',
+                isProficient: false,
+                modifier: '-1'
+            },
+            {
+                name: 'Constitution',
+                isProficient: false,
+                modifier: '-1'
+            },
+            {
+                name: 'Intelligence',
+                isProficient: true,
+                modifier: '-1'
+            },
+            {
+                name: 'Wisdom',
+                isProficient: false,
+                modifier: '-1'
+            },
+            {
+                name: 'Charisma',
+                isProficient: true,
+                modifier: '-1'
+            }],
+            skills: [
+                { name: 'Acrobatics', isProficient: false, modifier: '-1' },
+                { name: 'Animal Handling', isProficient: false, modifier: '-1' },
+                { name: 'Arcana', isProficient: false, modifier: '-1' },
+                { name: 'Athletics', isProficient: false, modifier: '-1' },
+                { name: 'Deception', isProficient: false, modifier: '-1' },
+                { name: 'History', isProficient: false, modifier: '-1' },
+                { name: 'Insight', isProficient: false, modifier: '-1' },
+                { name: 'Intimidation', isProficient: false, modifier: '-1' },
+                { name: 'Investigation', isProficient: false, modifier: '-1' },
+                { name: 'Medicine', isProficient: false, modifier: '-1' },
+                { name: 'Nature', isProficient: false, modifier: '-1' },
+                { name: 'Perception', isProficient: false, modifier: '-1' },
+                { name: 'Performance', isProficient: false, modifier: '-1' },
+                { name: 'Persuasion', isProficient: false, modifier: '-1' },
+                { name: 'Religion', isProficient: false, modifier: '-1' },
+                { name: 'Sleight of Hand', isProficient: false, modifier: '-1' },
+                { name: 'Stealth', isProficient: false, modifier: '-1' },
+                { name: 'Survival', isProficient: false, modifier: '-1' },
+            ],
+            passivePerception: '13',
+            proficienciesAndLanguages: [{
+                description: 'Common',
+            }],
+            armorClass: '12',
+            initiative: '+2',
+            speed: '25',
+            health: {
+                maximum: '42',
+                current: '42',
+                temporary: '',
+                hitDiceTotal: '6d8',
+                hitDiceCurrent: '6',
+                deathSaves: {
+                    successCount: 0,
+                    failCount: 0
+                }
+            },
+            attacksAndSpellcasting: [{
+                name: 'testName',
+                description: 'test description',
+            }],
+            inventory: {
+                weapons: [{
+                    name: 'Dagger',
+                    attackModifier: '+2',
+                    damage: '2d3+4 slashing'
+                }],
+                currency: {
+                    copper: '1',
+                    silver: '2',
+                    electrum: '3',
+                    gold: '4',
+                    platinum: '5',
+                },
+                items: [{
+                    name: 'itemName',
+                    description: 'itemDescription'
+                }],
+            },
+            description: {
+                personalityTraits: 'nice face',
+                ideals: 'likes stuff',
+                bonds: 'never lets you down',
+                flaws: 'does\'nt like other stuff',
+            },
+            features: [{
+                name: 'testName',
+                description: 'testDescription'
+            }],
+        };
+
+        var vm = new Vue({
+            el: '#bound-context',
+            data: {
+                character: testCharacterData,
+            }
+        });
+    </script>
+
+</body>
+</html>
