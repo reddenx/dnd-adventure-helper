@@ -140,68 +140,163 @@
                             <div class="col-12 skills-container">
                                 <div class="row">
                                     <div class="col-12" v-for="skill in character.skills">
-                                        {{skill.name}}
-                                        Prof: {{skill.isProficient}}
-                                        Mod: {{skill.modifier}}
+
+                                        <div class="skill-bubble" v-bind:class="{proficient:skill.isProficient}">
+                                        </div>
+
+                                        <div class="skill-modifier">
+                                            {{skill.modifier}}
+                                        </div>
+
+                                        <div class="skill-label">
+                                            {{skill.name}}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 skills-label">
+                                        Skills
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 passive-perception-container">
-                        Passive Perception {{character.passivePerception}}
+                        <div class="passive-perception-box">
+                            {{character.passivePerception}}
+                        </div>
+                        <div class="passive-perception-label-box">
+                            <div class="passive-perception-label">
+                                Passive Perception
+                            </div>
+                        </div>
                     </div>
                     <div class="col-12 proficiencies-container">
                         <div class="row">
-                            <div class="col-12" v-for="item in character.proficienciesAndLanguages">
-                                {{item.description}}
+                            <div class="col-12 proficiencies-internal-container">
+                                <div class="row">
+                                    <div class="col-12" v-for="item in character.proficienciesAndLanguages">
+                                        {{item.description}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 proficiencies-label">
+                                Other Proficiencies &amp; Languages
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
-                <div class="row">
+            <div class="col-12 col-md-4 ">
+                <div class="row stat-block">
                     <div class="col-4 armor-class-container">
-                        {{character.armorClass}}AC
+                        <div class="armor-class-box">
+                            <div class="armor-class">
+                                {{character.armorClass}}
+                            </div>
+                            <div class="armor-class-label">
+                                Armor<br />Class
+                            </div>
+                        </div>
                     </div>
                     <div class="col-4 initiative-container">
-                        {{character.initiative}} Initiative
+                        <div class="initiative-box">
+                            <div class="initiative">
+                                {{character.initiative}}
+                            </div>
+                            <div class="initiative-box-label">
+                                Initiative
+                            </div>
+                        </div>
                     </div>
                     <div class="col-4 speed-container">
-                        {{character.speed}} Speed
+                        <div class="speed-box">
+                            <div class="speed">
+                                {{character.speed}}
+                            </div>
+                            <div class="speed-box-label">
+                                Speed
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 health-points-container">
-                        Max HP: {{character.health.maximum}}<br />
-                        Current: {{character.health.current}}
+                    <div class="col-12 hit-points-container">
+                        <div class="hit-points-box">
+                            <div class="hit-points-box-top">
+                                Hit Point Maximum
+                                <span class="hit-points-maximum">
+                                    {{character.health.maximum}}
+                                </span>
+                            </div>
+                            <div class="hit-points">
+                                {{character.health.current}}
+                            </div>
+                            <div class="hit-points-box-label">
+                                Current Hit Points
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 temptorary-health-points-container">
-                        Temporary HP: {{character.health.temporary}}
+                    <div class="col-12 temporary-hit-points-container">
+                        <div class="temporary-hit-points-box">
+                            <div class="temporary-hit-points">
+                                {{character.health.temporary}}
+                            </div>
+                            <div class="temporary-hit-points-box-label">
+                                Temporary Hit Points
+                            </div>
+                        </div>
                     </div>
                     <div class="col-6 hit-dice-container">
-                        Hit Dice <br />
-                        Total: {{character.health.hitDiceTotal}}<br />
-                        {{character.health.hitDiceCurrent}}
-                    </div>
-                    <div class="col-6 death-saves-container">
-                        Death Saves <br />
-                        Successes: {{character.health.deathSaves.successCount}}<br />
-                        Failures: {{character.health.deathSaves.failCount}}
-                    </div>
-                    <div class="col-12 attacks-and-spellcasting-container">
-                        <div class="row">
-                            <div class="col-12 weapons-list-container" v-for="weapon in character.inventory.weapons">
-                                <div class="row">
-                                    <div class="col-5">{{weapon.name}}</div>
-                                    <div class="col-2">{{weapon.attackModifier}}</div>
-                                    <div class="col-5">{{weapon.damage}}</div>
-                                </div>
+                        <div class="hit-dice-box">
+                            <div class="hit-dice-box-top">
+                                Total: <span class="hit-dice-total">{{character.health.hitDiceTotal}}</span>
                             </div>
-                            <div class="col-12 attacks-list-container">
-                                Attacks &amp; Spellcasting
-                                <div class="row">
-                                    <div class="col-12" v-for="attack in character.attacksAndSpellcasting">
-                                        {{attack.name}} {{attack.description}}
+                            <div class="hit-dice">
+                                {{character.health.hitDiceCurrent}}
+                            </div>
+                            <div class="hit-dice-box-label">
+                                Hit Dice
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 death-rolls-container">
+                        <div class="death-rolls-box">
+                            <div class="death-rolls-row">
+                                <div class="death-rolls-label">
+                                    Successes:
+                                </div>
+                                <div v-for="n in [3,2,1]" v-bind:class="{ 'death-save-orb-filled': character.health.deathSaves.successCount >= n }" class="death-save-orb"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="death-rolls-row">
+                                <div class="death-rolls-label">
+                                    Failures
+                                </div>
+                                <div v-for="n in [3,2,1]" v-bind:class="{'death-save-orb-filled': character.health.deathSaves.failCount >= n }" class="death-save-orb"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="death-rolls-box-label">
+                                Death Saves
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12 attacks-and-spellcasting-container">
+                        <div class="attacks-and-spellcasting-box">
+                            <div class="row">
+                                <div class="col-12 weapons-list-container" v-for="weapon in character.inventory.weapons">
+                                    <div class="row">
+                                        <div class="col-5">{{weapon.name}}</div>
+                                        <div class="col-2">{{weapon.attackModifier}}</div>
+                                        <div class="col-5">{{weapon.damage}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-12 attacks-list-container">
+                                    Attacks &amp; Spellcasting
+                                    <div class="row">
+                                        <div class="col-12" v-for="attack in character.attacksAndSpellcasting">
+                                            {{attack.name}} {{attack.description}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -397,38 +492,374 @@
             margin-top: .25rem;
         }
 
-        .saving-throws-label {
-            text-align: center;
-            text-transform: uppercase;
-            font-size: .6rem;
-            font-weight: bold;
-        }
+            .saving-throws-container .saving-throws-label {
+                text-align: center;
+                text-transform: uppercase;
+                font-size: .6rem;
+                font-weight: bold;
+            }
 
-        .saving-throw-bubble {
+            .saving-throws-container .saving-throw-bubble {
+                margin-top: .25rem;
+                margin-right: .25rem;
+                float: left;
+                width: 1rem;
+                height: 1rem;
+                border: 1px solid black;
+                border-radius: .5rem;
+            }
+
+            .saving-throws-container .saving-throw-label {
+                font-size: .9rem;
+                text-align: left;
+            }
+
+            .saving-throws-container .saving-throw-modifier {
+                float: left;
+                border-bottom: 1px solid black;
+                min-width: 1.5rem;
+                text-align: center;
+                margin-right: .25rem;
+            }
+
+            .saving-throws-container .proficient {
+                background-color: black;
+            }
+
+        .skills-container {
             margin-top: .25rem;
-            margin-right: .25rem;
-            float: left;
-            width: 1rem;
-            height: 1rem;
             border: 1px solid black;
+            padding-left: .3rem;
+            padding-top: .2rem;
+            padding-right: .2rem;
+        }
+
+            .skills-container .skills-label {
+                text-align: center;
+                text-transform: uppercase;
+                font-size: .6rem;
+                font-weight: bold;
+            }
+
+            .skills-container .skill-bubble {
+                margin-top: .25rem;
+                margin-right: .25rem;
+                float: left;
+                width: 1rem;
+                height: 1rem;
+                border: 1px solid black;
+                border-radius: .5rem;
+            }
+
+            .skills-container .proficient {
+                background-color: black;
+            }
+
+            .skills-container .skill-label {
+                padding-top: .2rem;
+                font-size: .84rem;
+                text-transform: capitalize;
+            }
+
+            .skills-container .skill-modifier {
+                float: left;
+                border-bottom: 1px solid black;
+                min-width: 1.5rem;
+                text-align: center;
+                margin-right: .25rem;
+            }
+
+        .passive-perception-container {
+            margin-top: .25rem;
+        }
+
+            .passive-perception-container .passive-perception-box {
+                border-radius: 2rem;
+                height: 2rem;
+                width: 2rem;
+                text-align: center;
+                border: 1px solid black;
+                float: left;
+                padding-top: .2rem;
+            }
+
+            .passive-perception-container .passive-perception-label-box {
+                padding-left: 1.7rem;
+                padding-top: .3rem;
+            }
+
+            .passive-perception-container .passive-perception-label {
+                border: 1px solid black;
+                border-left: none;
+                font-size: .56rem;
+                text-transform: uppercase;
+                font-weight: bold;
+                text-align: center;
+                padding-top: .2rem;
+                min-height: 1.4rem;
+            }
+
+
+        .proficiencies-container {
+            border: 1px solid black;
+            margin-top: .25rem;
+        }
+
+            .proficiencies-container .proficiencies-internal-container {
+                min-height: 4rem;
+            }
+
+            .proficiencies-container .proficiencies-label {
+                text-transform: uppercase;
+                font-size: .7rem;
+                margin-bottom: .2rem;
+                text-align: center;
+            }
+
+        .stat-block {
+            background-color: #eee;
             border-radius: .5rem;
+            padding-bottom: .6rem;
         }
 
-        .saving-throw-label {
-            font-size: .9rem;
-            text-align: left;
+        .armor-class-container {
+            margin-top: .25rem;
+            padding-left: .3rem;
+            padding-right: .3rem;
         }
 
-        .saving-throw-modifier {
-            float: left;
-            border-bottom: 1px solid black;
-            min-width: 1.5rem;
-            text-align: center;
-            margin-right: .25rem;
+            .armor-class-container .armor-class-box {
+                border: 1px solid black;
+                border-radius: .5rem;
+                background-color: #fff;
+                min-height: 4rem;
+            }
+
+            .armor-class-container .armor-class {
+                min-height: 2.4rem;
+                text-align: center;
+                font-size: 1.5rem;
+            }
+
+            .armor-class-container .armor-class-label {
+                border-top: 1px solid black;
+                text-align: center;
+                text-transform: uppercase;
+                font-size: .5rem;
+                font-weight: bold;
+            }
+
+        .initiative-container {
+            margin-top: .25rem;
+            padding-left: .3rem;
+            padding-right: .3rem;
         }
-        .proficient {
-            background-color: black;
+
+            .initiative-container .initiative-box {
+                border: 1px solid black;
+                border-radius: .5rem;
+                background-color: #fff;
+                min-height: 4rem;
+            }
+
+            .initiative-container .initiative {
+                min-height: 3rem;
+                text-align: center;
+                font-size: 1.9rem;
+            }
+
+            .initiative-container .initiative-box-label {
+                border-top: 1px solid black;
+                text-align: center;
+                text-transform: uppercase;
+                font-size: .5rem;
+                font-weight: bold;
+            }
+
+
+
+        .speed-container {
+            margin-top: .25rem;
+            padding-left: .3rem;
+            padding-right: .3rem;
         }
+
+            .speed-container .speed-box {
+                border: 1px solid black;
+                border-radius: .5rem;
+                background-color: #fff;
+                min-height: 4rem;
+            }
+
+            .speed-container .speed {
+                min-height: 3rem;
+                text-align: center;
+                font-size: 1.9rem;
+            }
+
+            .speed-container .speed-box-label {
+                border-top: 1px solid black;
+                text-align: center;
+                text-transform: uppercase;
+                font-size: .5rem;
+                font-weight: bold;
+            }
+
+
+        .hit-points-container {
+            margin-top: .5rem;
+        }
+
+            .hit-points-container .hit-points-box {
+                border: 1px solid black;
+                background: #fff;
+                border-radius: .5rem .5rem 0 0;
+                padding: .1rem .5rem;
+            }
+
+            .hit-points-container .hit-points-box-top {
+                font-size: .6rem;
+            }
+
+            .hit-points-container .hit-points-maximum {
+                font-size: .8rem;
+                padding-left: .5rem;
+            }
+
+            .hit-points-container .hit-points {
+                text-align: center;
+                font-size: 2rem;
+                margin-top: -.5rem;
+                margin-bottom: -.4rem;
+            }
+
+            .hit-points-container .hit-points-box-label {
+                text-transform: uppercase;
+                text-align: center;
+                font-size: .5rem;
+                font-weight: bold;
+            }
+
+
+        .temporary-hit-points-container {
+            margin-top: .3rem;
+        }
+
+            .temporary-hit-points-container .temporary-hit-points-box {
+                border: 1px solid black;
+                border-radius: 0 0 .5rem .5rem;
+                background-color: #fff;
+            }
+
+            .temporary-hit-points-container .temporary-hit-points-box-label {
+                text-transform: uppercase;
+                text-align: center;
+                font-size: .5rem;
+                font-weight: bold;
+            }
+
+            .temporary-hit-points-container .temporary-hit-points {
+                font-size: 2rem;
+                min-height: 2.5rem;
+            }
+
+        .hit-dice-container {
+            padding-right: .15rem;
+        }
+
+            .hit-dice-container .hit-dice-box {
+                margin-top: .3rem;
+                border: 1px solid black;
+                background-color: #fff;
+                border-radius: .5rem;
+                padding-left: .5rem;
+            }
+
+            .hit-dice-container .hit-dice-box-top {
+                font-size: .6rem;
+                text-align: left;
+                text-transform: capitalize;
+            }
+
+            .hit-dice-container .hit-dice-total {
+                font-size: .8rem;
+            }
+
+            .hit-dice-container .hit-dice {
+                font-size: 1.6rem;
+                text-align: center;
+                margin-top: -.5rem;
+                margin-bottom: -.2rem;
+            }
+
+            .hit-dice-container .hit-dice-box-label {
+                text-transform: uppercase;
+                font-size: .5rem;
+                text-align: center;
+                font-weight: bold;
+            }
+
+
+        .death-rolls-container {
+            padding-left: .15rem;
+        }
+
+            .death-rolls-container .death-rolls-box {
+                margin-top: .3rem;
+                border: 1px solid black;
+                background-color: #fff;
+                border-radius: .5rem;
+                padding: .5rem .3rem 0 .3rem;
+            }
+
+            .death-rolls-container .death-rolls-label {
+                float: left;
+            }
+
+            .death-rolls-container .death-rolls-row {
+                font-size: .5rem;
+                text-transform: uppercase;
+                margin-top: .3rem;
+                min-height: 1.0rem;
+            }
+
+                .death-rolls-container .death-rolls-row:first-child {
+                    margin-top: 0;
+                }
+
+            .death-rolls-container .death-save-orb {
+                width: .8rem;
+                height: .8rem;
+                border: 1px solid black;
+                border-radius: .5rem;
+                display: inline-block;
+                margin-left: .1rem;
+                float: right;
+            }
+
+            .death-rolls-container .death-save-orb-filled {
+                background: black;
+            }
+
+            .death-rolls-container .death-rolls-box-label {
+                font-size: .6rem;
+                text-align: center;
+                font-weight: bold;
+            }
+
+        .attacks-and-spellcasting-container {
+        }
+
+        .attacks-and-spellcasting-container .attacks-and-spellcasting-box {
+            border: 1px solid black;
+            padding: .2rem;
+        }
+
+        .weapons-list-container {
+
+        }
+
+
     </style>
 
     <script>
@@ -442,63 +873,24 @@
             race: 'Forest Gnome',
             alignment: 'choatic-neutral',
             experience: 'Milestone(N/A)',
-            attributes: [{
-                name: 'Strength',
-                amount: '8',
-                modifier: '-1',
-            }, {
-                name: 'Dexterity',
-                amount: '8',
-                modifier: '-1',
-            }, {
-                name: 'Constitution',
-                amount: '8',
-                modifier: '-1',
-            }, {
-                name: 'Intelligence',
-                amount: '8',
-                modifier: '-1',
-            }, {
-                name: 'Wisdom',
-                amount: '8',
-                modifier: '-1',
-            }, {
-                name: 'Charisma',
-                amount: '8',
-                modifier: '-1',
-            }],
+            attributes: [
+                { name: 'Strength', amount: '8', modifier: '-1', },
+                { name: 'Dexterity', amount: '8', modifier: '-1', },
+                { name: 'Constitution', amount: '8', modifier: '-1', },
+                { name: 'Intelligence', amount: '8', modifier: '-1', },
+                { name: 'Wisdom', amount: '8', modifier: '-1', },
+                { name: 'Charisma', amount: '8', modifier: '-1', }
+            ],
             hasInspiration: true,
             proficiencyBonus: '+3',
-            savingThrows: [{
-                name: 'Strength',
-                isProficient: true,
-                modifier: '-1'
-            },
-            {
-                name: 'Dexterity',
-                isProficient: false,
-                modifier: '-1'
-            },
-            {
-                name: 'Constitution',
-                isProficient: false,
-                modifier: '-1'
-            },
-            {
-                name: 'Intelligence',
-                isProficient: true,
-                modifier: '-1'
-            },
-            {
-                name: 'Wisdom',
-                isProficient: false,
-                modifier: '-1'
-            },
-            {
-                name: 'Charisma',
-                isProficient: true,
-                modifier: '-1'
-            }],
+            savingThrows: [
+                { name: 'Strength', isProficient: true, modifier: '-1' },
+                { name: 'Dexterity', isProficient: false, modifier: '-1' },
+                { name: 'Constitution', isProficient: false, modifier: '-1' },
+                { name: 'Intelligence', isProficient: true, modifier: '-1' },
+                { name: 'Wisdom', isProficient: false, modifier: '-1' },
+                { name: 'Charisma', isProficient: true, modifier: '-1' }
+            ],
             skills: [
                 { name: 'Acrobatics', isProficient: false, modifier: '-1' },
                 { name: 'Animal Handling', isProficient: false, modifier: '-1' },
@@ -506,10 +898,10 @@
                 { name: 'Athletics', isProficient: false, modifier: '-1' },
                 { name: 'Deception', isProficient: false, modifier: '-1' },
                 { name: 'History', isProficient: false, modifier: '-1' },
-                { name: 'Insight', isProficient: false, modifier: '-1' },
+                { name: 'Insight', isProficient: false, modifier: '+9' },
                 { name: 'Intimidation', isProficient: false, modifier: '-1' },
                 { name: 'Investigation', isProficient: false, modifier: '-1' },
-                { name: 'Medicine', isProficient: false, modifier: '-1' },
+                { name: 'Medicine', isProficient: true, modifier: '-1' },
                 { name: 'Nature', isProficient: false, modifier: '-1' },
                 { name: 'Perception', isProficient: false, modifier: '-1' },
                 { name: 'Performance', isProficient: false, modifier: '-1' },
@@ -520,9 +912,7 @@
                 { name: 'Survival', isProficient: false, modifier: '-1' },
             ],
             passivePerception: '13',
-            proficienciesAndLanguages: [{
-                description: 'Common',
-            }],
+            proficienciesAndLanguages: [{ name: 'Common', description: 'Common', }],
             armorClass: '12',
             initiative: '+2',
             speed: '25',
@@ -533,8 +923,8 @@
                 hitDiceTotal: '6d8',
                 hitDiceCurrent: '6',
                 deathSaves: {
-                    successCount: 0,
-                    failCount: 0
+                    successCount: 1,
+                    failCount: 2
                 }
             },
             attacksAndSpellcasting: [{
@@ -545,7 +935,7 @@
                 weapons: [{
                     name: 'Dagger',
                     attackModifier: '+2',
-                    damage: '2d3+4 slashing'
+                    damage: '2d3+4 slash'
                 }],
                 currency: {
                     copper: '1',
