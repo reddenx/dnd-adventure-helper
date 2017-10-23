@@ -61,7 +61,7 @@
             return self;
         }
 
-        var entryReferenceRegex = /#(\w+)/g;
+        var entryReferenceRegex = /#([\w-_]+)/g;
         var parseTextForLinks = function (text) {
 
             var matches = [];
@@ -72,7 +72,7 @@
 
             var hashMatches = {};
             return matches.map(function (item) {
-                return item[1];
+                return item[1].replace('-', ' ');
             }).filter(function (item) {
                 return hashMatches.hasOwnProperty(item) ? false : (hashMatches[item] = true);
             });
@@ -96,7 +96,6 @@
                     this.currentEntryLinks = referencedLinks.map(function (item) {
                         return self.globalLinkedItemsHash[item] || new linkedItem(item);
                     });
-
                 }, 500),
                 saveLink: function (link) {
                     this.globalLinkedItemsHash[link.name] = link;
