@@ -16,7 +16,8 @@
         <div class="row">
             <div class="col-md-4 col-12 character-name-container">
                 <div class="character-name-inner-container">
-                    <span class="character-name">{{character.name}}
+                    <span class="character-name">
+                        {{character.name}}
                     </span>
                 </div>
                 <div class="character-name-label">
@@ -222,7 +223,8 @@
                         <div class="hit-points-box">
                             <div class="hit-points-box-top">
                                 Hit Point Maximum
-                                <span class="hit-points-maximum">{{character.health.maximum}}
+                                <span class="hit-points-maximum">
+                                    {{character.health.maximum}}
                                 </span>
                             </div>
                             <div class="hit-points">
@@ -332,9 +334,9 @@
                                 <div class="inventory-item" v-for="item in character.inventory.items">
                                     <button class="inventory-item-button" v-on:click="item.showDescription = !item.showDescription">{{item.name}}</button>
                                     <div class="inventory-item-description" v-show="item.showDescription">
-                                        {{item.description}}                                   
+                                        {{item.description}}
                                     </div>
-                                </div>  
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -377,67 +379,81 @@
             border: 1px solid #bbb;
         }*/
 
-        .character-name-container
-        {
+        .box-container {
+            padding: .25rem;
+        }
+
+        .box-container-dark {
+            background-color: #eee;
+        }
+
+        .box-content {
+            border: 1px solid black;
+            border-radius: .5rem;
+            padding: .5rem;
+            background-color: #fff;
+        }
+
+        .box-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            font-size: .6rem;
+        }
+
+
+
+        .character-name-container {
             min-height: 5rem;
         }
 
-            .character-name-container .character-name-inner-container
-            {
+            .character-name-container .character-name-inner-container {
                 margin-top: 1rem;
                 border: 1px solid black;
                 padding: 0 2rem;
                 text-align: center;
             }
 
-            .character-name-container .character-name-label
-            {
+            .character-name-container .character-name-label {
                 font-size: .6rem;
                 text-transform: uppercase;
             }
 
-            .character-name-container .character-name
-            {
+            .character-name-container .character-name {
                 font-size: 1.4rem;
             }
 
 
 
-        .character-top-bar-container
-        {
+        .character-top-bar-container {
             min-height: 5rem;
             border: 1px solid black;
             padding: .3rem 1rem;
         }
 
-            .character-top-bar-container .top-bar-text
-            {
+            .character-top-bar-container .top-bar-text {
                 text-transform: capitalize;
                 font-size: 1rem;
                 border-bottom: 1px solid black;
                 text-wrap: none;
             }
 
-            .character-top-bar-container .top-bar-label
-            {
+            .character-top-bar-container .top-bar-label {
                 font-size: .6rem;
                 text-transform: uppercase;
             }
 
-        .top-bar-spacer
-        {
+        .top-bar-spacer {
             margin-bottom: 1rem;
         }
 
-        .attribute-container
-        {
+        .attribute-container {
             background-color: #eee;
             padding: .5rem;
             border-radius: .5rem;
         }
 
-            .attribute-container .attribute-box
-            {
+            .attribute-container .attribute-box {
                 box-sizing: border-box;
                 border: 1px solid black;
                 border-radius: .3rem;
@@ -445,34 +461,29 @@
                 background-color: white;
             }
 
-            .attribute-container .attribute-name
-            {
+            .attribute-container .attribute-name {
                 text-transform: uppercase;
                 font-size: .5rem;
                 font-weight: bold;
                 text-align: center;
             }
 
-            .attribute-container .attribute-amount
-            {
+            .attribute-container .attribute-amount {
                 font-size: 1.4rem;
                 text-align: center;
             }
 
-            .attribute-container .attribute-modifier
-            {
+            .attribute-container .attribute-modifier {
                 font-size: .8rem;
                 text-align: center;
                 border-top: 1px solid #808080;
             }
 
 
-        .inspiration-container
-        {
+        .inspiration-container {
         }
 
-            .inspiration-container .inspiration-check-box
-            {
+            .inspiration-container .inspiration-check-box {
                 height: 2rem;
                 width: 2rem;
                 text-align: center;
@@ -481,14 +492,12 @@
                 padding-top: .2rem;
             }
 
-            .inspiration-container .inspiration-label-box
-            {
+            .inspiration-container .inspiration-label-box {
                 padding-left: 2rem;
                 padding-top: .3rem;
             }
 
-            .inspiration-container .inspiration-label
-            {
+            .inspiration-container .inspiration-label {
                 border: 1px solid black;
                 border-left: none;
                 font-size: .6rem;
@@ -498,13 +507,11 @@
                 padding: .2rem .5rem;
             }
 
-        .proficiency-bonus-container
-        {
+        .proficiency-bonus-container {
             margin-top: .2rem;
         }
 
-            .proficiency-bonus-container .proficiency-box
-            {
+            .proficiency-bonus-container .proficiency-box {
                 border-radius: 2rem;
                 height: 2rem;
                 width: 2rem;
@@ -514,14 +521,12 @@
                 padding-top: .2rem;
             }
 
-            .proficiency-bonus-container .proficiency-label-box
-            {
+            .proficiency-bonus-container .proficiency-label-box {
                 padding-left: 1.7rem;
                 padding-top: .3rem;
             }
 
-            .proficiency-bonus-container .proficiency-label
-            {
+            .proficiency-bonus-container .proficiency-label {
                 border: 1px solid black;
                 border-left: none;
                 font-size: .56rem;
@@ -532,22 +537,19 @@
                 min-height: 1.4rem;
             }
 
-        .saving-throws-container
-        {
+        .saving-throws-container {
             border: 1px solid black;
             margin-top: .25rem;
         }
 
-            .saving-throws-container .saving-throws-label
-            {
+            .saving-throws-container .saving-throws-label {
                 text-align: center;
                 text-transform: uppercase;
                 font-size: .6rem;
                 font-weight: bold;
             }
 
-            .saving-throws-container .saving-throw-bubble
-            {
+            .saving-throws-container .saving-throw-bubble {
                 margin-top: .25rem;
                 margin-right: .25rem;
                 float: left;
@@ -557,14 +559,12 @@
                 border-radius: .5rem;
             }
 
-            .saving-throws-container .saving-throw-label
-            {
+            .saving-throws-container .saving-throw-label {
                 font-size: .9rem;
                 text-align: left;
             }
 
-            .saving-throws-container .saving-throw-modifier
-            {
+            .saving-throws-container .saving-throw-modifier {
                 float: left;
                 border-bottom: 1px solid black;
                 min-width: 1.5rem;
@@ -572,13 +572,11 @@
                 margin-right: .25rem;
             }
 
-            .saving-throws-container .proficient
-            {
+            .saving-throws-container .proficient {
                 background-color: black;
             }
 
-        .skills-container
-        {
+        .skills-container {
             margin-top: .25rem;
             border: 1px solid black;
             padding-left: .3rem;
@@ -586,16 +584,14 @@
             padding-right: .2rem;
         }
 
-            .skills-container .skills-label
-            {
+            .skills-container .skills-label {
                 text-align: center;
                 text-transform: uppercase;
                 font-size: .6rem;
                 font-weight: bold;
             }
 
-            .skills-container .skill-bubble
-            {
+            .skills-container .skill-bubble {
                 margin-top: .25rem;
                 margin-right: .25rem;
                 float: left;
@@ -605,20 +601,17 @@
                 border-radius: .5rem;
             }
 
-            .skills-container .proficient
-            {
+            .skills-container .proficient {
                 background-color: black;
             }
 
-            .skills-container .skill-label
-            {
+            .skills-container .skill-label {
                 padding-top: .2rem;
                 font-size: .84rem;
                 text-transform: capitalize;
             }
 
-            .skills-container .skill-modifier
-            {
+            .skills-container .skill-modifier {
                 float: left;
                 border-bottom: 1px solid black;
                 min-width: 1.5rem;
@@ -626,13 +619,11 @@
                 margin-right: .25rem;
             }
 
-        .passive-perception-container
-        {
+        .passive-perception-container {
             margin-top: .25rem;
         }
 
-            .passive-perception-container .passive-perception-box
-            {
+            .passive-perception-container .passive-perception-box {
                 border-radius: 2rem;
                 height: 2rem;
                 width: 2rem;
@@ -642,14 +633,12 @@
                 padding-top: .2rem;
             }
 
-            .passive-perception-container .passive-perception-label-box
-            {
+            .passive-perception-container .passive-perception-label-box {
                 padding-left: 1.7rem;
                 padding-top: .3rem;
             }
 
-            .passive-perception-container .passive-perception-label
-            {
+            .passive-perception-container .passive-perception-label {
                 border: 1px solid black;
                 border-left: none;
                 font-size: .56rem;
@@ -661,56 +650,48 @@
             }
 
 
-        .proficiencies-container
-        {
+        .proficiencies-container {
             border: 1px solid black;
             margin-top: .25rem;
         }
 
-            .proficiencies-container .proficiencies-internal-container
-            {
+            .proficiencies-container .proficiencies-internal-container {
                 min-height: 4rem;
             }
 
-            .proficiencies-container .proficiencies-label
-            {
+            .proficiencies-container .proficiencies-label {
                 text-transform: uppercase;
                 font-size: .7rem;
                 margin-bottom: .2rem;
                 text-align: center;
             }
 
-        .stat-block
-        {
+        .stat-block {
             background-color: #eee;
             border-radius: .5rem;
             padding-bottom: .6rem;
         }
 
-        .armor-class-container
-        {
+        .armor-class-container {
             margin-top: .25rem;
             padding-left: .3rem;
             padding-right: .3rem;
         }
 
-            .armor-class-container .armor-class-box
-            {
+            .armor-class-container .armor-class-box {
                 border: 1px solid black;
                 border-radius: .5rem;
                 background-color: #fff;
                 min-height: 4rem;
             }
 
-            .armor-class-container .armor-class
-            {
+            .armor-class-container .armor-class {
                 min-height: 2.4rem;
                 text-align: center;
                 font-size: 1.5rem;
             }
 
-            .armor-class-container .armor-class-label
-            {
+            .armor-class-container .armor-class-label {
                 border-top: 1px solid black;
                 text-align: center;
                 text-transform: uppercase;
@@ -718,30 +699,26 @@
                 font-weight: bold;
             }
 
-        .initiative-container
-        {
+        .initiative-container {
             margin-top: .25rem;
             padding-left: .3rem;
             padding-right: .3rem;
         }
 
-            .initiative-container .initiative-box
-            {
+            .initiative-container .initiative-box {
                 border: 1px solid black;
                 border-radius: .5rem;
                 background-color: #fff;
                 min-height: 4rem;
             }
 
-            .initiative-container .initiative
-            {
+            .initiative-container .initiative {
                 min-height: 3rem;
                 text-align: center;
                 font-size: 1.9rem;
             }
 
-            .initiative-container .initiative-box-label
-            {
+            .initiative-container .initiative-box-label {
                 border-top: 1px solid black;
                 text-align: center;
                 text-transform: uppercase;
@@ -751,30 +728,26 @@
 
 
 
-        .speed-container
-        {
+        .speed-container {
             margin-top: .25rem;
             padding-left: .3rem;
             padding-right: .3rem;
         }
 
-            .speed-container .speed-box
-            {
+            .speed-container .speed-box {
                 border: 1px solid black;
                 border-radius: .5rem;
                 background-color: #fff;
                 min-height: 4rem;
             }
 
-            .speed-container .speed
-            {
+            .speed-container .speed {
                 min-height: 3rem;
                 text-align: center;
                 font-size: 1.9rem;
             }
 
-            .speed-container .speed-box-label
-            {
+            .speed-container .speed-box-label {
                 border-top: 1px solid black;
                 text-align: center;
                 text-transform: uppercase;
@@ -783,40 +756,34 @@
             }
 
 
-        .hit-points-container
-        {
+        .hit-points-container {
             margin-top: .5rem;
         }
 
-            .hit-points-container .hit-points-box
-            {
+            .hit-points-container .hit-points-box {
                 border: 1px solid black;
                 background: #fff;
                 border-radius: .5rem .5rem 0 0;
                 padding: .1rem .5rem;
             }
 
-            .hit-points-container .hit-points-box-top
-            {
+            .hit-points-container .hit-points-box-top {
                 font-size: .6rem;
             }
 
-            .hit-points-container .hit-points-maximum
-            {
+            .hit-points-container .hit-points-maximum {
                 font-size: .8rem;
                 padding-left: .5rem;
             }
 
-            .hit-points-container .hit-points
-            {
+            .hit-points-container .hit-points {
                 text-align: center;
                 font-size: 2rem;
                 margin-top: -.5rem;
                 margin-bottom: -.4rem;
             }
 
-            .hit-points-container .hit-points-box-label
-            {
+            .hit-points-container .hit-points-box-label {
                 text-transform: uppercase;
                 text-align: center;
                 font-size: .5rem;
@@ -824,39 +791,33 @@
             }
 
 
-        .temporary-hit-points-container
-        {
+        .temporary-hit-points-container {
             margin-top: .3rem;
         }
 
-            .temporary-hit-points-container .temporary-hit-points-box
-            {
+            .temporary-hit-points-container .temporary-hit-points-box {
                 border: 1px solid black;
                 border-radius: 0 0 .5rem .5rem;
                 background-color: #fff;
             }
 
-            .temporary-hit-points-container .temporary-hit-points-box-label
-            {
+            .temporary-hit-points-container .temporary-hit-points-box-label {
                 text-transform: uppercase;
                 text-align: center;
                 font-size: .5rem;
                 font-weight: bold;
             }
 
-            .temporary-hit-points-container .temporary-hit-points
-            {
+            .temporary-hit-points-container .temporary-hit-points {
                 font-size: 2rem;
                 min-height: 2.5rem;
             }
 
-        .hit-dice-container
-        {
+        .hit-dice-container {
             padding-right: .15rem;
         }
 
-            .hit-dice-container .hit-dice-box
-            {
+            .hit-dice-container .hit-dice-box {
                 margin-top: .3rem;
                 border: 1px solid black;
                 background-color: #fff;
@@ -864,28 +825,24 @@
                 padding-left: .5rem;
             }
 
-            .hit-dice-container .hit-dice-box-top
-            {
+            .hit-dice-container .hit-dice-box-top {
                 font-size: .6rem;
                 text-align: left;
                 text-transform: capitalize;
             }
 
-            .hit-dice-container .hit-dice-total
-            {
+            .hit-dice-container .hit-dice-total {
                 font-size: .8rem;
             }
 
-            .hit-dice-container .hit-dice
-            {
+            .hit-dice-container .hit-dice {
                 font-size: 1.6rem;
                 text-align: center;
                 margin-top: -.5rem;
                 margin-bottom: -.2rem;
             }
 
-            .hit-dice-container .hit-dice-box-label
-            {
+            .hit-dice-container .hit-dice-box-label {
                 text-transform: uppercase;
                 font-size: .5rem;
                 text-align: center;
@@ -893,13 +850,11 @@
             }
 
 
-        .death-rolls-container
-        {
+        .death-rolls-container {
             padding-left: .15rem;
         }
 
-            .death-rolls-container .death-rolls-box
-            {
+            .death-rolls-container .death-rolls-box {
                 margin-top: .3rem;
                 border: 1px solid black;
                 background-color: #fff;
@@ -907,26 +862,22 @@
                 padding: .5rem .3rem 0 .3rem;
             }
 
-            .death-rolls-container .death-rolls-label
-            {
+            .death-rolls-container .death-rolls-label {
                 float: left;
             }
 
-            .death-rolls-container .death-rolls-row
-            {
+            .death-rolls-container .death-rolls-row {
                 font-size: .5rem;
                 text-transform: uppercase;
                 margin-top: .3rem;
                 min-height: 1.0rem;
             }
 
-                .death-rolls-container .death-rolls-row:first-child
-                {
+                .death-rolls-container .death-rolls-row:first-child {
                     margin-top: 0;
                 }
 
-            .death-rolls-container .death-save-orb
-            {
+            .death-rolls-container .death-save-orb {
                 width: .8rem;
                 height: .8rem;
                 border: 1px solid black;
@@ -936,73 +887,61 @@
                 float: right;
             }
 
-            .death-rolls-container .death-save-orb-filled
-            {
+            .death-rolls-container .death-save-orb-filled {
                 background: black;
             }
 
-            .death-rolls-container .death-rolls-box-label
-            {
+            .death-rolls-container .death-rolls-box-label {
                 font-size: .6rem;
                 text-align: center;
                 font-weight: bold;
             }
 
-        .attacks-and-spellcasting-container
-        {
+        .attacks-and-spellcasting-container {
         }
 
-            .attacks-and-spellcasting-container .attacks-and-spellcasting-box
-            {
+            .attacks-and-spellcasting-container .attacks-and-spellcasting-box {
                 border: 1px solid black;
                 padding: .2rem;
             }
 
-            .attacks-and-spellcasting-container .weapons-list-container
-            {
+            .attacks-and-spellcasting-container .weapons-list-container {
             }
 
-        .inventory-container
-        {
+        .inventory-container {
             margin-top: .25rem;
         }
 
-            .inventory-container .inventory-box
-            {
+            .inventory-container .inventory-box {
                 border: 1px solid black;
                 min-height: 12rem;
                 padding: .2rem;
             }
 
-            .inventory-container .money-container
-            {
+            .inventory-container .money-container {
                 min-width: 2rem;
                 max-width: 4rem;
                 float: right;
             }
 
-            .inventory-container .money-box
-            {
+            .inventory-container .money-box {
                 border: 1px solid black;
                 padding: .1rem .3rem;
                 margin-top: .1rem;
                 border-radius: .5rem;
             }
 
-            .inventory-container .inventory-item-button
-            {
+            .inventory-container .inventory-item-button {
                 border: none;
                 background-color: #fff;
                 text-transform: capitalize;
                 text-decoration: underline;
             }
 
-            .inventory-container .items-container
-            {
+            .inventory-container .items-container {
             }
 
-            .inventory-container .inventory-item
-            {
+            .inventory-container .inventory-item {
             }
     </style>
 
@@ -1056,7 +995,7 @@
                 { name: 'Survival', isProficient: false, modifier: '-1' },
             ],
             passivePerception: '13',
-            proficienciesAndLanguages: [{ name: 'Common', description: 'Common', }],
+            proficienciesAndLanguages: [{ name: 'Common', description: 'Common', showDescription: false }],
             armorClass: '12',
             initiative: '+2',
             speed: '25',
@@ -1074,6 +1013,7 @@
             attacksAndSpellcasting: [{
                 name: 'testName',
                 description: 'test description',
+                showDescription: false,
             }],
             inventory: {
                 weapons: [{
@@ -1090,7 +1030,8 @@
                 },
                 items: [{
                     name: 'itemName',
-                    description: 'itemDescription'
+                    description: 'itemDescription',
+                    showDescription: false,
                 }],
             },
             description: {
@@ -1101,7 +1042,8 @@
             },
             features: [{
                 name: 'testName',
-                description: 'testDescription'
+                description: 'testDescription',
+                showDescription: false,
             }],
         };
 

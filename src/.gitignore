@@ -1,0 +1,10 @@
+**/bin
+**/Bin
+**/obj
+*.obj
+*.vs
+**.dll
+*.suo
+*.pdb
+**/packages/**
+*.user
