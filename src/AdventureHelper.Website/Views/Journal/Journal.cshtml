@@ -1,15 +1,130 @@
-﻿<div class="container">
+﻿<script src="~/Scripts/AdventureJournal.js"></script>
 
-    <div class="col-12">
-        <div class="card">
-            <div class="card-block">
-                <h4 class="card-title">Title</h4>
-                <h6 class="card-subtitle">SubTitle</h6>
-                <p class="card-text">internal card text</p>
+<div class="container" id="bound-context">
+    <div class="col-12 mb-md-4">
+        <div class="row">
+            <div class="col-4">
+                Toji
+            </div>
+            <div class="col-8">
+                the wizard
             </div>
         </div>
     </div>
 
+    <div class="col-12">
+        <div class="row">
+
+            <div class="col-2">
+                <div class="list-group">
+                    <div class="list-group-item" v-for="entry in journal.journalEntries">
+                        {{entry.name}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+
+                        <div class="form-inline mb-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="entryEditor.name" placeholder="Journal Entry Name" />
+                            </div>
+                            <button v-on:click="journalEntrySaveButtonPressed" class="mx-2 btn btn-primary">save</button>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Journal Entry" v-model="entryEditor.entry" v-on:keyup="journalEntryTextChanged"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+
+                        <button type="button" class="btn btn-secondary" v-for="link in entryEditor.links">
+                            {{link.name}}
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                links
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <div class="col-12">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="tag-edit-form" class="tag-edit-form-container" style="display:none;">
+            <div class="card">
+                <div class="card-body" v-show="!linkDetails.isEditing">
+                    <h4 class="card-title text-capitalize">{{linkDetails.name}}</h4>
+                    <h6 class="card-subtitle text-muted">{{linkDetails.type}}</h6>
+                    <p class="card-text">{{linkDetails.body}}</p>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-primary" v-on:click="linkDetailsEditButtonPressed">Edit</a>
+                    </div>
+                </div>
+                <div class="card-body" v-show="linkDetails.isEditing">
+                    <div class="form-group">
+                        <input class="form-control" type="text" v-model="linkDetails.editName" />
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" v-model="linkDetails.editType" />
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" v-model="linkDetails.editBody"></textarea>
+                    </div>
+
+                    <div class="text-right">
+                        <a href="#" class="btn btn-primary" v-on:click="linkDetailsSaveButtonPressed">Save</a>
+                        <a href="#" class="btn btn-secondary" v-on:click="linkDetailsCancelButtonPressed">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 
@@ -18,4 +133,69 @@
 
 <script>
 
+    var vm = new Vue({
+        el: '#bound-context',
+        data: {
+            entryEditor: {
+                name: '',
+                entry: '',
+                links: [],
+            },
+            linkDetails: {
+                name: 'Card title',
+                type: 'type',
+                body: 'body text',
+                editName: 'Card title',
+                editType: 'type',
+                editBody: 'body text',
+
+                isEditing: false,
+                isSaving: false
+            },
+            journal: new AdventureJournal()
+        },
+        methods: {
+            linkDetailsEditButtonPressed: function () {
+                this.linkDetails.isEditing = true;
+            },
+            linkDetailsSaveButtonPressed: function () {
+                this.linkDetails.isEditing = false;
+                this.isSaving = false;
+                this.linkDetailsSaveComplete();
+            },
+            linkDetailsCancelButtonPressed: function () {
+                this.linkDetails.isEditing = false;
+                this.resetEditLinkDetails();
+            },
+            linkDetailsSaveComplete: function () {
+                this.isSaving = false;
+            },
+            resetEditLinkDetails: function () {
+                this.linkDetails.editName = this.linkDetails.name;
+                this.linkDetails.editType = this.linkDetails.type;
+                this.linkDetails.editBody = this.linkDetails.body;
+            },
+            journalEntryTextChanged: _.debounce(function () {
+                var linkNames = ParseTextForLinks(this.entryEditor.entry);
+                this.entryEditor.links = linkNames.map(function (item) {
+                    return new Link(item);
+                });
+
+            }, 500),
+            journalEntrySaveButtonPressed: function () {
+                var journalEntry = new JournalEntry(this.entryEditor.name, this.entryEditor.entry);
+                var dto = journalEntry.ToDocumentDto();
+                this.journal.SaveDocument(dto);
+            }
+        }
+    });
 </script>
+
+
+
+<style>
+    .tag-edit-form-container {
+        width: 18rem;
+        height: 12rem;
+    }
+</style>
