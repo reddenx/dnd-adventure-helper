@@ -5,10 +5,7 @@ using System.Web;
 
 namespace AdventureHelper.Website.Models
 {
-    public class Document
+    public class JournalEntry
     {
-        public string Name;
-        public Dictionary<string, string> MetaData;
-        public string Body;
     }
 }

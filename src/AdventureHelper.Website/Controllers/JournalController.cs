@@ -18,34 +18,33 @@ namespace AdventureHelper.Website.Controllers
             DocumentRepository = new DocumentRepository(configuration.JournalFilePath);
         }
 
-
         [Route("")]
         public ViewResult Journal()
         {
             return View();
         }
 
-        [Route("json/documents")]
-        [HttpGet]
-        public JsonResult GetDocuments() //DocumentDto[]
-        {
-            var documents = DocumentRepository.GetAllDocuments();
-            var dtos = documents.Select(d => d.ToDto());
+        //[Route("json/documents")]
+        //[HttpGet]
+        //public JsonResult GetDocuments() //DocumentDto[]
+        //{
+        //    var documents = DocumentRepository.GetAllDocuments();
+        //    var dtos = documents.Select(d => d.ToDto());
 
-            return Json(dtos, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(dtos, JsonRequestBehavior.AllowGet);
+        //}
 
-        [Route("json/documents")]
-        [HttpPost]
-        public JsonResult SaveDocument(DocumentDto document)
+        //[Route("json/documents")]
+        //[HttpPost]
+        //public JsonResult SaveDocument(DocumentDto document)
+        //{
+        //    DocumentRepository.UpdateDocument(document);
+        //    return Json("derp", JsonRequestBehavior.AllowGet);
+        //}
+
+        public PartialViewResult JournalViewComponent()
         {
-            DocumentRepository.UpdateDocument(new Document()
-            {
-                Body = document.Body,
-                MetaData = document.MetaData,
-                Name = document.Name
-            });
-            return Json("derp", JsonRequestBehavior.AllowGet);
+            return PartialView();
         }
     }
 }

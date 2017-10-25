@@ -107,7 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Scripts\AdventureJournal.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -117,16 +116,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Configuration.cs" />
-    <Compile Include="Models\Document.cs" />
-    <Compile Include="Models\DocumentDto.cs" />
-    <Compile Include="Models\DocumentMapper.cs" />
     <Compile Include="Models\DocumentRepository.cs" />
+    <Compile Include="Models\JournalEntry.cs" />
+    <Compile Include="Models\Link.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
-    <Content Include="Views\Journal\Journal.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_Viewstart.cshtml" />
     <None Include="Web.Debug.config">
@@ -138,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\" />
+    <Folder Include="Views\Journal\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

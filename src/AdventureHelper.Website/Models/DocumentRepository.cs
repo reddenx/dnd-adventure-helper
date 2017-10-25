@@ -15,42 +15,65 @@ namespace AdventureHelper.Website.Models
             FilePath = filePath;
         }
 
-        public Document[] GetAllDocuments()
+
+        //public Document[] GetAllDocuments()
+        //{
+        //    if (File.Exists(FilePath))
+        //    {
+        //        var rawData = File.ReadAllText(FilePath);
+        //        var data = JsonConvert.DeserializeObject<Document[]>(rawData);
+        //        return data;
+        //    }
+        //    else
+        //    {
+        //        return new Document[0];
+        //    }
+        //}
+
+        //public void UpdateDocuments(Document[] documents)
+        //{
+        //    var rawData = JsonConvert.SerializeObject(documents);
+        //    File.WriteAllText(FilePath, rawData);
+        //}
+
+        //public void UpdateDocument(DocumentDto document)
+        //{
+        //    var documents = GetAllDocuments();
+        //    var foundDocument = documents.FirstOrDefault(d => d.Id == document.Id);
+
+        //    var updatedDocument = new Document
+        //    {
+        //        Body = document.Body,
+        //        Id = foundDocument?.Id ?? Guid.NewGuid(),
+        //        MetaData = MergeMetaData(foundDocument?.MetaData, document.MetaData),
+        //        Name = document.Name
+        //    };
+
+        //    if (!updatedDocument.MetaData.ContainsKey("date-created"))
+        //    {
+        //        updatedDocument.MetaData["date-created"] = DateTime.Now.ToString("O");
+        //    }
+
+        //    updatedDocument.MetaData["date-last-updated"] = DateTime.Now.ToString("O");
+
+        //    var replacedDocuments = documents
+        //        .Where(d => d.Id != document.Id)
+        //        .Concat(new[] { updatedDocument })
+        //        .ToArray();
+
+        //    UpdateDocuments(replacedDocuments);
+        //}
+
+        private Dictionary<string, string> MergeMetaData(Dictionary<string, string> oldData, Dictionary<string, string> newData)
         {
-            if (File.Exists(FilePath))
-            {
-                var rawData = File.ReadAllText(FilePath);
-                var data = JsonConvert.DeserializeObject<Document[]>(rawData);
-                return data;
-            }
-            else
-            {
-                return new Document[0];
-            }
-        }
+            var newStuff = oldData ?? new Dictionary<string, string>();
 
-        public void UpdateDocuments(Document[] documents)
-        {
-            var rawData = JsonConvert.SerializeObject(documents);
-            File.WriteAllText(FilePath, rawData);
-        }
-
-        public void UpdateDocument(Document document)
-        {
-            var documents = GetAllDocuments();
-            if(!document.MetaData.ContainsKey("date-created"))
+            foreach (var entry in newData)
             {
-                document.MetaData["date-created"] = DateTime.Now.ToString("O");
+                newStuff[entry.Key] = entry.Value;
             }
 
-            document.MetaData["date-last-updated"] = DateTime.Now.ToString("O");
-
-            var replacedDocuments = documents
-                .Where(d => d.Name != document.Name)
-                .Concat(new[] { document })
-                .ToArray();
-
-            UpdateDocuments(replacedDocuments);
+            return newStuff;
         }
     }
 }
