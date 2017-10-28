@@ -24,6 +24,13 @@ namespace AdventureHelper.Website.Controllers
             return View();
         }
 
+        [Route("api/entries")]
+        public JsonResult Entries()
+        {
+            var entries = DocumentRepository.GetJournalEntries();
+            return Json(entries);
+        }
+
         //[Route("json/documents")]
         //[HttpGet]
         //public JsonResult GetDocuments() //DocumentDto[]

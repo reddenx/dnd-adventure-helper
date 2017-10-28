@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\JournalApi.js" />
     <Content Include="Scripts\OLD\AdventureJournal.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -118,6 +119,7 @@
     </Compile>
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DocumentRepository.cs" />
+    <Compile Include="Models\FileDb.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\Link.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

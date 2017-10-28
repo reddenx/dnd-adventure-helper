@@ -15,6 +15,24 @@ namespace AdventureHelper.Website.Models
             FilePath = filePath;
         }
 
+        public JournalEntry[] GetJournalEntries()
+        {
+            var entries = FileDb.Get<JournalEntry>(FilePath);
+            return entries;
+        }
+
+        public void SaveEntry(JournalEntry entry)
+        {
+            var entries = GetJournalEntries();
+            if (!entry.Id.HasValue)
+            {
+                entry.Id = Guid.NewGuid();
+            }
+
+            var updatedEntryList = entries.Where(e => e.Id != entry.Id).Concat(new[] { entry }).ToArray();
+            FileDb.Save(FilePath, entries);
+        }
+
 
         //public Document[] GetAllDocuments()
         //{
