@@ -102,5 +102,4 @@ var ParseTextForLinks = function (text) {
         return hashMatches.hasOwnProperty(item) ? false : (hashMatches[item] = true);
     });
     return filter;
-
 }

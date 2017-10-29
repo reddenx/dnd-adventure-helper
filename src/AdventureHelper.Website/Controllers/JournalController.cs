@@ -10,12 +10,14 @@ namespace AdventureHelper.Website.Controllers
     [RoutePrefix("journal")]
     public class JournalController : Controller
     {
-        private readonly DocumentRepository DocumentRepository;
+        private readonly SimpleFileBank<JournalEntryDto> JournalRepository;
+        private readonly SimpleFileBank<JournalLinksDto> LinkRepository;
 
         public JournalController()
         {
             var configuration = new Configuration();
-            DocumentRepository = new DocumentRepository(configuration.JournalFilePath);
+            JournalRepository = new SimpleFileBank<JournalEntryDto>(configuration.JournalFilePath);
+            LinkRepository = new SimpleFileBank<JournalLinksDto>(configuration.LinkFilePath);
         }
 
         [Route("")]
@@ -25,29 +27,34 @@ namespace AdventureHelper.Website.Controllers
         }
 
         [Route("api/entries")]
+        [HttpGet]
         public JsonResult Entries()
         {
-            var entries = DocumentRepository.GetJournalEntries();
-            return Json(entries);
+            var entries = JournalRepository.Get();
+            return Json(entries, JsonRequestBehavior.AllowGet);
         }
 
-        //[Route("json/documents")]
-        //[HttpGet]
-        //public JsonResult GetDocuments() //DocumentDto[]
-        //{
-        //    var documents = DocumentRepository.GetAllDocuments();
-        //    var dtos = documents.Select(d => d.ToDto());
+        [Route("api/entries")]
+        [HttpPost]
+        public void SaveEntry(JournalEntryDto data)
+        {
+            JournalRepository.Save(data);
+        }
 
-        //    return Json(dtos, JsonRequestBehavior.AllowGet);
-        //}
+        [Route("api/links")]
+        [HttpGet]
+        public JsonResult Links()
+        {
+            var links = LinkRepository.Get();
+            return Json(links, JsonRequestBehavior.AllowGet);
+        }
 
-        //[Route("json/documents")]
-        //[HttpPost]
-        //public JsonResult SaveDocument(DocumentDto document)
-        //{
-        //    DocumentRepository.UpdateDocument(document);
-        //    return Json("derp", JsonRequestBehavior.AllowGet);
-        //}
+        [Route("api/links")]
+        [HttpPost]
+        public void SaveLink(JournalLinksDto data)
+        {
+            LinkRepository.Save(data);
+        }
 
         public PartialViewResult JournalViewComponent()
         {

@@ -118,11 +118,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Configuration.cs" />
-    <Compile Include="Models\DocumentRepository.cs" />
-    <Compile Include="Models\FileDb.cs" />
-    <Compile Include="Models\JournalEntry.cs" />
-    <Compile Include="Models\Link.cs" />
+    <Compile Include="Models\JournalEntryDto.cs" />
+    <Compile Include="Models\JournalLinksDto.cs" />
+    <Compile Include="Models\SimpleFileBank.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DictionaryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -130,6 +130,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_Viewstart.cshtml" />
     <Content Include="Views\Journal\OLD\Journal.cshtml" />
+    <Content Include="Views\Journal\Journal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

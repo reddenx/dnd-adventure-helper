@@ -10,5 +10,8 @@ namespace AdventureHelper.Website.Models
     {
         [AppSettings("JournalFilePath")]
         public readonly string JournalFilePath;
+
+        [AppSettings("LinkFilePath")]
+        public readonly string LinkFilePath;
     }
 }

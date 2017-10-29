@@ -1,0 +1,173 @@
+﻿
+
+
+<div class="container" id="bound-context">
+    <div class="row">
+
+        @* left navigation column *@
+        <div class="col-6 text-center" v-show="mode === 'browsing'">
+            <h4>Entries</h4>
+            <button type="button" class="btn btn-primary" v-on:click="startNewEntry">+ New</button>
+
+            <ul class="list-group">
+                <li class="list-group-item" v-for="entry in entries">
+                    <a href="#" class="nav-link" v-on:click="viewEntry(entry)">{{entry.name}}</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-8" v-show="mode === 'viewing'">
+            <div class="card">
+                <div class="card-body">
+                    <h4>{{viewedEntry.name}} <button v-on:click="closeViewedEntry" class="btn btn-secondary float-right">X</button></h4>
+                    <p class="card-text">{{viewedEntry.body}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8" v-show="mode === 'editing'">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="text" placeholder="Entry Name" class="form-control" v-model="editor.name" />
+                        </div>
+                        <div class="form-group">
+                            <button type="button" v-on:click="editorSaveEntry" class="btn btn-primary ml-3">save</button>
+                            <button type="button" v-on:click="editorCancelEdits" class="btn btn-secondary ml-3">cancel</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="body" class="form-control" v-modl="editor.body"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* right link list column *@
+        <div class="text-center" v-bind:class="{'col-4': mode === 'browsing', 'col-2': mode === 'editing' || mode ==='viewing'}">
+            <h4>Links</h4>
+            <button type="button" class="btn btn-primary" v-on:click="startNewLink">+ New</button>
+
+            <div class="row">
+
+                <button type="button" class="btn btn-secondary" v-for="link in links">
+                    {{link.name}}
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/Scripts/JournalApi.js"></script>
+<script>
+
+    var api = new JournalApi();
+    var vm = new Vue({
+        el: '#bound-context',
+        data: {
+            entries: [],
+            links: [],
+            linkTypeTree: {},
+            linkTypes: [],
+            mode: 'browsing',
+
+            editor: {},
+
+            viewedEntry: {},
+        },
+        mounted: function () {
+            var self = this;
+            var asyncCalls = 2;
+
+            var maybeReady = function () {
+                --asyncCalls;
+                if (asyncCalls == 0) {
+                    self.doneLoading();
+                }
+            }
+
+            api.getEntries(function (entries) {
+                self.entries = entries;
+                maybeReady();
+            });
+            api.getLinks(function (links) {
+                self.links = links;
+                self.links.forEach(function (item) {
+                    if (!self.linkTypeTree[item.type]) {
+                        self.linkTypeTree[item.type] = [];
+                        self.linkTypes.push(item.type);
+                    }
+
+                    self.linkTypeTree[item.type].push(item);
+                });
+
+                self.linkTypeTree;
+                maybeReady();
+            });
+        },
+        methods: {
+            doneLoading: function () { },
+            refreshEntries: function () {
+                var self = this;
+                api.getEntries(function (entries) {
+                    debugger;
+                    self.entries = entries;
+                });
+            },
+            startNewEntry: function () {
+                this.mode = 'editing';
+            },
+            startNewLink: function () { },
+            editorSaveEntry: function () {
+                var editorEntry = new JournalEntry(this.editor.name, this.editor.body);
+                api.saveEntry(editorEntry);
+                this.refreshEntries();
+                this.mode = 'viewing';
+            },
+            editorCancelEdits: function () {
+                this.editor.name = '';
+                this.editor.body = '';
+            },
+            viewEntry: function (entry) {
+                this.viewedEntry = new ViewedEntryVM(entry);
+                this.mode = 'viewing';
+            },
+            closeViewedEntry: function () {
+                this.mode = 'browsing';
+            }
+        }
+    })
+
+    var ViewedEntryVM = function (entry) {
+        var self = this;
+
+        self.data = entry;
+        self.name = entry.name;
+        self.body = entry.body;
+
+        return self;
+    }
+
+    var EditWrapper = function (data) {
+        var self = this;
+
+        self.data = data;
+        self.editData = {};
+        self.isEditing = false;
+
+        var resetEditor = function () {
+            for (prop in self.data) {
+                self.editData[prop] = self.data[prop];
+            }
+        }
+
+        var updateData = function (newData) {
+            self.data = newData;
+            self.resetEditor();
+        }
+
+        return self;
+    }
+
+</script>
