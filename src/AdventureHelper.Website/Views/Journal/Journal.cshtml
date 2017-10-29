@@ -2,59 +2,136 @@
 
 
 <div class="container" id="bound-context">
+
     <div class="row">
-
-        @* left navigation column *@
-        <div class="col-6 text-center" v-show="mode === 'browsing'">
-            <h4>Entries</h4>
+        @* entry list viewer *@
+        <div class="col-12">
             <button type="button" class="btn btn-primary" v-on:click="startNewEntry">+ New</button>
-
-            <ul class="list-group">
-                <li class="list-group-item" v-for="entry in entries">
-                    <a href="#" class="nav-link" v-on:click="viewEntry(entry)">{{entry.name}}</a>
-                </li>
-            </ul>
+            <div class="list-group">
+                <div class="list-group-item" v-for="entry in viewer.entries">
+                    {{entry.name}}
+                </div>
+            </div>
         </div>
 
-        <div class="col-8" v-show="mode === 'viewing'">
+        @* entry viewer *@
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4>{{viewedEntry.name}} <button v-on:click="closeViewedEntry" class="btn btn-secondary float-right">X</button></h4>
+                    <h4 class="card-title">{{viewedEntry.name}}</h4>
                     <p class="card-text">{{viewedEntry.body}}</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-8" v-show="mode === 'editing'">
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <input type="text" placeholder="Entry Name" class="form-control" v-model="editor.name" />
-                        </div>
-                        <div class="form-group">
-                            <button type="button" v-on:click="editorSaveEntry" class="btn btn-primary ml-3">save</button>
-                            <button type="button" v-on:click="editorCancelEdits" class="btn btn-secondary ml-3">cancel</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <textarea placeholder="body" class="form-control" v-modl="editor.body"></textarea>
-                    </div>
+        @* entry editor *@
+        <div class="card">
+            <div class="card-body">
+                <input type="text" v-model="editor.name" placeholder="name" />
+                <textarea placeholder="body" v-model="editor.body"></textarea>
+                <button type="button" class="btn btn-primary" v-on:click="editorSave">Save</button>
+                <button type="button" class="btn btn-secondary" v-on:click="editorCancel">Cancel</button>
+                <div class="badge" v-for="link in editor.parsedLinks">
+                    {{link.name}}
                 </div>
             </div>
         </div>
 
-        @* right link list column *@
-        <div class="text-center" v-bind:class="{'col-4': mode === 'browsing', 'col-2': mode === 'editing' || mode ==='viewing'}">
-            <h4>Links</h4>
+        @* link lister *@
+        <div class="col-12">
+            Links
             <button type="button" class="btn btn-primary" v-on:click="startNewLink">+ New</button>
-
-            <div class="row">
-
-                <button type="button" class="btn btn-secondary" v-for="link in links">
-                    {{link.name}}
-                </button>
+            <div class="card" v-for="linkType in linkList.linkTypes">
+                <div class="card-body">
+                    <h4 class="card-title">{{linkType}}</h4>
+                    <div class="badge" v-for="link in linkList.linkTypeTree[linkType]">{{link.name}}</div>
+                </div>
             </div>
+        </div>
+
+        @* link viewer *@
+        <div class="col-12">
+            link viewer
+            <div class="card">
+                <div class="card-body">
+                    <h4>{{linkViewer.name}}</h4>
+                    {{linkViewer.type}}
+                    <p class="card-text">{{linkViewer.body}}</p>
+                </div>
+            </div>
+        </div>
+
+        @* link editor *@
+        <div class="col-12">
+            link editor
+            <input type="text" v-model="linkEditor.name" />
+            <input type="text" v-model="linkEditor.type" />
+            <input type="text" v-model="linkEditor.body" />
+            <button type="button" class="btn btn-primary" v-on:click="linkEditorSave">Save</button>
+            <button type="button" class="btn btn-secondary" v-on:click="linkEditorCancel">Cancel</button>
+        </div>
+    </div>
+
+    <div class="row">
+
+        @* left navigation column *@
+        @*<div class="col-8 text-center" v-show="mode === 'browsing'">
+                <h4>Entries</h4>
+                <button type="button" class="btn btn-primary" v-on:click="startNewEntry">+ New</button>
+
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="entry in entries">
+                        <a href="#" class="nav-link" v-on:click="viewEntry(entry)">{{entry.name}}</a>
+                    </li>
+                </ul>
+            </div>*@
+
+        @* left viewing column  *@
+        @*<div class="col-8" v-show="mode === 'viewing'">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>{{viewedEntry.name}} <button v-on:click="closeViewedEntry" class="btn btn-secondary float-right">X</button></h4>
+                        <p class="card-text">{{viewedEntry.body}}</p>
+                    </div>
+                </div>
+            </div>*@
+
+        @* left editing column *@
+        @*<div class="col-8" v-show="mode === 'editing'">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input type="text" placeholder="Entry Name" class="form-control" v-model="editor.name" />
+                            </div>
+                            <div class="form-group">
+                                <button type="button" v-on:click="editorSaveEntry" class="btn btn-primary ml-3">save</button>
+                                <button type="button" v-on:click="editorCancelEdits" class="btn btn-secondary ml-3">cancel</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="body" class="form-control" v-modl="editor.body"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+        @* right link list column *@
+        @*<div class="col-4 text-center">
+                <h4>Links</h4>
+                <button type="button" class="btn btn-primary" v-on:click="startNewLink">+ New</button>
+
+                <div class="row">
+
+                    <button type="button" class="btn btn-secondary" v-for="link in links">
+                        {{link.name}}
+                    </button>
+                </div>
+            </div>*@
+
+
+        <div class="">
+
         </div>
 
     </div>
@@ -72,102 +149,118 @@
             linkTypes: [],
             mode: 'browsing',
 
-            editor: {},
+            linkViewer: {
+                name: 'linkviewer-name',
+                type: 'linkviewer-type',
+                body: 'linkviewer-body',
+            },
 
+            linkEditor: {
+                name: 'linkeditor-name',
+                type: 'linkeditor-type',
+                body: 'linkeditor',
+                parsedLinks: [],
+            },
+            linkList: {
+                linkTypes: [],
+                linkTypeTree: {},
+            },
+            viewer: {
+                entries: [],
+            },
+            editor: {
+                parsedLinks: [],
+                body: '',
+                name: '',
+                entry: {},
+            },
             viewedEntry: {},
         },
         mounted: function () {
-            var self = this;
-            var asyncCalls = 2;
+            //var self = this;
+            //var asyncCalls = 2;
 
-            var maybeReady = function () {
-                --asyncCalls;
-                if (asyncCalls == 0) {
-                    self.doneLoading();
-                }
-            }
+            //var maybeReady = function () {
+            //    --asyncCalls;
+            //    if (asyncCalls == 0) {
+            //        self.doneLoading();
+            //    }
+            //}
 
-            api.getEntries(function (entries) {
-                self.entries = entries;
-                maybeReady();
-            });
-            api.getLinks(function (links) {
-                self.links = links;
-                self.links.forEach(function (item) {
-                    if (!self.linkTypeTree[item.type]) {
-                        self.linkTypeTree[item.type] = [];
-                        self.linkTypes.push(item.type);
-                    }
+            //api.getEntries(function (entries) {
+            //    self.entries = entries;
+            //    maybeReady();
+            //});
+            //api.getLinks(function (links) {
+            //    self.links = links;
+            //    self.links.forEach(function (item) {
+            //        if (!self.linkTypeTree[item.type]) {
+            //            self.linkTypeTree[item.type] = [];
+            //            self.linkTypes.push(item.type);
+            //        }
 
-                    self.linkTypeTree[item.type].push(item);
-                });
+            //        self.linkTypeTree[item.type].push(item);
+            //    });
 
-                self.linkTypeTree;
-                maybeReady();
-            });
+            //    self.linkTypeTree;
+            //    maybeReady();
+            //});
+            this.refreshEntries();
         },
         methods: {
-            doneLoading: function () { },
             refreshEntries: function () {
+                console.log('refresh-entries');
                 var self = this;
                 api.getEntries(function (entries) {
-                    debugger;
                     self.entries = entries;
                 });
             },
+
+            viewerLoad: function (entry) {
+                console.log('viewer-load');
+            },
+
+            editorSave: function () {
+                console.log('editor-save');
+            },
+            editorCancel: function () {
+                console.log('editor-cancel');
+            },
+            editorLoad: function (entry) {
+                console.log('editor-load');
+                this.editor.entry = entry;
+            },
+            editorResetToData: function () {
+                console.log('editor-reset-data');
+                this.editor.name = this.editor.entry.name;
+                this.editor.body = this.editor.entry.body;
+            },
+
             startNewEntry: function () {
-                this.mode = 'editing';
+                console.log('start-new-entry');
             },
-            startNewLink: function () { },
-            editorSaveEntry: function () {
-                var editorEntry = new JournalEntry(this.editor.name, this.editor.body);
-                api.saveEntry(editorEntry);
-                this.refreshEntries();
-                this.mode = 'viewing';
+
+            startNewLink: function () {
+                console.log('start-new-link');
             },
-            editorCancelEdits: function () {
-                this.editor.name = '';
-                this.editor.body = '';
+
+            linkViewerLoad: function (entry) {
+                console.log('link-viewer-load');
             },
-            viewEntry: function (entry) {
-                this.viewedEntry = new ViewedEntryVM(entry);
-                this.mode = 'viewing';
+
+            linkEditorLoad: function (entry) {
+                console.log('link-editor-load');
             },
-            closeViewedEntry: function () {
-                this.mode = 'browsing';
-            }
+            linkEditorResetToData: function () {
+                console.log('link-editor-reset-data');
+            },
+            linkEditorSave: function () {
+                console.log('link-editor-save');
+            },
+            linkEditorCancel: function () {
+                console.log('link-editor-cancel');
+            },
         }
     })
-
-    var ViewedEntryVM = function (entry) {
-        var self = this;
-
-        self.data = entry;
-        self.name = entry.name;
-        self.body = entry.body;
-
-        return self;
-    }
-
-    var EditWrapper = function (data) {
-        var self = this;
-
-        self.data = data;
-        self.editData = {};
-        self.isEditing = false;
-
-        var resetEditor = function () {
-            for (prop in self.data) {
-                self.editData[prop] = self.data[prop];
-            }
-        }
-
-        var updateData = function (newData) {
-            self.data = newData;
-            self.resetEditor();
-        }
-
-        return self;
-    }
 
 </script>
