@@ -14,6 +14,7 @@ var vm = new Vue({
             name: 'linkviewer-name',
             type: 'linkviewer-type',
             body: 'linkviewer-body',
+            contentList: [],
             linkData: {},
         },
 
@@ -49,34 +50,6 @@ var vm = new Vue({
         },
     },
     mounted: function () {
-        //var self = this;
-        //var asyncCalls = 2;
-
-        //var maybeReady = function () {
-        //    --asyncCalls;
-        //    if (asyncCalls == 0) {
-        //        self.doneLoading();
-        //    }
-        //}
-
-        //api.getEntries(function (entries) {
-        //    self.entries = entries;
-        //    maybeReady();
-        //});
-        //api.getLinks(function (links) {
-        //    self.links = links;
-        //    self.links.forEach(function (item) {
-        //        if (!self.linkTypeTree[item.type]) {
-        //            self.linkTypeTree[item.type] = [];
-        //            self.linkTypes.push(item.type);
-        //        }
-
-        //        self.linkTypeTree[item.type].push(item);
-        //    });
-
-        //    self.linkTypeTree;
-        //    maybeReady();
-        //});
         this.refreshEntries();
         this.refreshLinks();
     },
@@ -87,6 +60,7 @@ var vm = new Vue({
 
             var self = this;
             api.getEntries(function (entries) {
+                self.entries = [];
                 self.entries = entries;
                 self.asyncOperationsCount -= 1;
                 self.entryListRefresh();
@@ -105,6 +79,9 @@ var vm = new Vue({
         },
         getLinkedContentFromText: function (text) {
             var contentList = [];
+            if (!text) {
+                return contentList;
+            }
             var self = this;
             text.split(entryReferenceRegex).forEach(function (item, index) {
                 if (index % 2 != 0) {
@@ -118,7 +95,7 @@ var vm = new Vue({
                     }
 
 
-                } else {
+                } else if (item && item.length > 0) {
                     contentList.push(item);
                 }
             });
@@ -128,6 +105,11 @@ var vm = new Vue({
         //entry list viewer
         entryListRefresh: function () {
         },
+        showEntryList: function () {
+            this.entryViewer.show = false;
+            this.editor.show = false;
+            this.entryListViewer.show = true;
+        },
 
         //entry viewer
         viewerLoad: function (entry) {
@@ -136,14 +118,15 @@ var vm = new Vue({
 
             this.entryViewer.contentList = this.getLinkedContentFromText(entry.body);
 
+            this.showViewer();
+        },
+        viewerClose: function () {
+            this.showEntryList();
+        },
+        showViewer: function () {
             this.entryViewer.show = true;
             this.editor.show = false;
             this.entryListViewer.show = false;
-        },
-        viewerClose: function() {
-            this.entryViewer.show = false;
-            this.editor.show = false;
-            this.entryListViewer.show = true;
         },
 
         //entry editor
@@ -157,24 +140,22 @@ var vm = new Vue({
                 self.editor.asyncActions--;
                 self.refreshEntries();
             });
+
+            this.showEntryList();
         },
         editorCancel: function () {
             console.debug('editor-cancel');
 
             this.editorResetToData();
 
-            this.entryViewer.show = false;
-            this.editor.show = false;
-            this.entryListViewer.show = true;
+            this.showEntryList();
         },
         editorLoad: function (entry) {
             console.debug('editor-load');
             this.editor.savedData = entry;
             this.editorResetToData();
 
-            this.entryViewer.show = false;
-            this.editor.show = true;
-            this.entryListViewer.show = false;
+            this.showEditor();
         },
         editorResetToData: function () {
             console.debug('editor-reset-data');
@@ -196,6 +177,11 @@ var vm = new Vue({
                 }
             });
         }, 1200),
+        showEditor: function () {
+            this.entryViewer.show = false;
+            this.editor.show = true;
+            this.entryListViewer.show = false;
+        },
 
         startNewEntry: function () {
             console.debug('start-new-entry');
@@ -225,6 +211,9 @@ var vm = new Vue({
             this.linkViewer.type = link.type;
             this.linkViewer.body = link.body;
 
+            this.linkViewer.contentList = [];
+            this.linkViewer.contentList = this.getLinkedContentFromText(link.body);
+
             this.linkViewer.show = true;
 
             if (x || y) {
@@ -232,7 +221,7 @@ var vm = new Vue({
                 this.linkViewer.position.y = y;
             }
         },
-        linkViewerClose: function() {
+        linkViewerClose: function () {
             console.debug('link-viewer-close');
 
             this.linkViewer.show = false;
@@ -243,6 +232,7 @@ var vm = new Vue({
             console.debug('link-editor-load');
             this.linkEditor.savedData = entry;
             this.linkEditorResetToData();
+
             this.linkEditor.show = true;
             this.linkViewer.show = false;
 

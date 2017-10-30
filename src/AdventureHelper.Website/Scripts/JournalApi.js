@@ -82,6 +82,9 @@ var JournalApi = function () {
             }),
             dataType: 'json',
             contentType: 'application/Json',
+            complete: function (data) {
+                callback();
+            }
         })
     }
 

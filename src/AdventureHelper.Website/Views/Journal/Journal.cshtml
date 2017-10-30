@@ -161,7 +161,13 @@
                         {{linkViewer.type}}
                     </div>
 
-                    <p class="card-text">{{linkViewer.body}}</p>
+                    <p class="card-text">
+                        <template v-for="contentItem in linkViewer.contentList">
+                            <span v-if="contentItem.length">{{contentItem}}</span>
+                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)">{{contentItem.name}}</button>
+                        </template>
+                    </p>
+
                     <button type="button" class="btn btn-primary" v-on:click="linkEditorLoad(linkViewer.linkData, linkViewer.position.x, linkViewer.position.y)">Edit</button>
                 </div>
             </div>
