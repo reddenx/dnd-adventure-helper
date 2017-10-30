@@ -1,74 +1,191 @@
-﻿
+﻿<style>
+    .btn-inline {
+        padding: 0 .2rem;
+    }
+
+    .link-viewer-container {
+        position: absolute;
+        width: 25rem;
+    }
+
+    .link-editor-container {
+        position: absolute;
+        width: 25rem;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        -moz-animation-name: loading-spinner;
+        -o-animation-name: loading-spinner;
+        -webkit-animation-name: loading-spinner;
+        animation-name: loading-spinner;
+        -moz-animation-iteration-count: infinite;
+        -o-animation-iteration-count: infinite;
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+        -moz-animation-timing-function: linear;
+        -o-animation-timing-function: linear;
+        -webkit-animation-timing-function: linear;
+        animation-timing-function: linear;
+        -moz-animation-duration: 4000ms;
+        -o-animation-duration: 4000ms;
+        -webkit-animation-duration: 4000ms;
+        animation-duration: 4000ms;
+    }
+
+    @@keyframes loading-spinner {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@-moz-keyframes loading-spinner {
+        from {
+            -moz-transform: rotate(0deg);
+        }
+
+        to {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    @@-webkit-keyframes loading-spinner {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+</style>
 
 
-<div class="container" id="bound-context">
+
+<div class="container pt-3" id="bound-context">
 
     <div class="row">
+
+        @* loading spinner *@
+        <div class="col-12" v-show="asyncOperationsCount > 0">
+            <div class="loading-spinner">
+                LOADING
+            </div>
+        </div>
+
+
+
         @* entry list viewer *@
-        <div class="col-12">
-            <button type="button" class="btn btn-primary" v-on:click="startNewEntry">+ New</button>
+        <div class="col-8 entry-list-container" v-show="entryListViewer.show">
+            <button type="button" class="btn btn-primary btn-block" v-on:click="startNewEntry">+ New</button>
             <div class="list-group">
-                <div class="list-group-item" v-for="entry in viewer.entries">
+                <a href="#" class="list-group-item list-group-item-action" v-for="entry in entries" v-on:click="viewerLoad(entry)">
                     {{entry.name}}
-                </div>
+                </a>
             </div>
         </div>
 
         @* entry viewer *@
-        <div class="col-12">
+        <div class="col-8 entry-viewer-container" v-show="entryViewer.show">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">{{viewedEntry.name}}</h4>
-                    <p class="card-text">{{viewedEntry.body}}</p>
+                    <div class="clearfix text-right">
+                        <h4 class="card-title float-left">{{entryViewer.viewedEntry.name}}</h4>
+                        <button class="btn btn-secondary btn-sm" v-on:click="viewerClose">back</button>
+                    </div>
+
+                    <p class="card-text">
+                        <template v-for="contentItem in entryViewer.contentList">
+                            <span v-if="contentItem.length">{{contentItem}}</span>
+                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)">{{contentItem.name}}</button>
+                        </template>
+                    </p>
+
+                    <button type="button" class="btn btn-primary" v-on:click="editorLoad(entryViewer.viewedEntry)">Edit</button>
                 </div>
             </div>
         </div>
 
         @* entry editor *@
-        <div class="card">
-            <div class="card-body">
-                <input type="text" v-model="editor.name" placeholder="name" />
-                <textarea placeholder="body" v-model="editor.body"></textarea>
-                <button type="button" class="btn btn-primary" v-on:click="editorSave">Save</button>
-                <button type="button" class="btn btn-secondary" v-on:click="editorCancel">Cancel</button>
-                <div class="badge" v-for="link in editor.parsedLinks">
-                    {{link.name}}
+        <div class="col-8 entry-editor-container" v-show="editor.show">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <input class="form-control" type="text" v-model="editor.name" placeholder="name" />
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="body" v-model="editor.body" v-on:keyup="editorBodyChanged"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" v-on:click="editorSave">Save</button>
+                        <button type="button" class="btn btn-secondary" v-on:click="editorCancel">Cancel</button>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary btn-inline mr-1 mb-1" v-for="link in editor.parsedLinks" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)">
+                        {{link.name}}
+                    </button>
                 </div>
             </div>
         </div>
 
         @* link lister *@
-        <div class="col-12">
-            Links
-            <button type="button" class="btn btn-primary" v-on:click="startNewLink">+ New</button>
+        <div class="col-4 link-list-container">
+            <button type="button" class="btn btn-primary btn-block" v-on:click="startNewLink($event.pageX, $event.pageY)">+ New</button>
+
             <div class="card" v-for="linkType in linkList.linkTypes">
                 <div class="card-body">
                     <h4 class="card-title">{{linkType}}</h4>
-                    <div class="badge" v-for="link in linkList.linkTypeTree[linkType]">{{link.name}}</div>
+
+                    <button type="button" class="btn btn-secondary mr-1 mb-1 btn-inline" v-for="link in linkList.linkTypeTree[linkType]" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)">
+                        {{link.name}}
+                    </button>
                 </div>
             </div>
         </div>
 
         @* link viewer *@
-        <div class="col-12">
-            link viewer
+        <div class="link-viewer-container" v-show="linkViewer.show" v-bind:style="{ top: linkViewer.position.y + 'px', left: linkViewer.position.x + 'px' }">
             <div class="card">
                 <div class="card-body">
-                    <h4>{{linkViewer.name}}</h4>
-                    {{linkViewer.type}}
+                    <div class="text-right clearfix">
+                        <h4 class="float-left">{{linkViewer.name}}</h4>
+                        <button class="btn btn-sm btn-secondary" v-on:click="linkViewerClose">X</button>
+                    </div>
+
+                    <div class="text-muted">
+                        {{linkViewer.type}}
+                    </div>
+
                     <p class="card-text">{{linkViewer.body}}</p>
+                    <button type="button" class="btn btn-primary" v-on:click="linkEditorLoad(linkViewer.linkData, linkViewer.position.x, linkViewer.position.y)">Edit</button>
                 </div>
             </div>
         </div>
 
         @* link editor *@
-        <div class="col-12">
-            link editor
-            <input type="text" v-model="linkEditor.name" />
-            <input type="text" v-model="linkEditor.type" />
-            <input type="text" v-model="linkEditor.body" />
-            <button type="button" class="btn btn-primary" v-on:click="linkEditorSave">Save</button>
-            <button type="button" class="btn btn-secondary" v-on:click="linkEditorCancel">Cancel</button>
+        <div class="link-editor-container" v-show="linkEditor.show" v-bind:style="{ top: linkEditor.position.y + 'px', left: linkEditor.position.x + 'px' }">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <input class="form-control" type="text" v-model="linkEditor.name" />
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control" type="text" v-model="linkEditor.type" />
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" type="text" v-model="linkEditor.body"></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" v-on:click="linkEditorSave">Save</button>
+                    <button type="button" class="btn btn-secondary" v-on:click="linkEditorCancel">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -137,130 +254,4 @@
     </div>
 </div>
 <script src="~/Scripts/JournalApi.js"></script>
-<script>
-
-    var api = new JournalApi();
-    var vm = new Vue({
-        el: '#bound-context',
-        data: {
-            entries: [],
-            links: [],
-            linkTypeTree: {},
-            linkTypes: [],
-            mode: 'browsing',
-
-            linkViewer: {
-                name: 'linkviewer-name',
-                type: 'linkviewer-type',
-                body: 'linkviewer-body',
-            },
-
-            linkEditor: {
-                name: 'linkeditor-name',
-                type: 'linkeditor-type',
-                body: 'linkeditor',
-                parsedLinks: [],
-            },
-            linkList: {
-                linkTypes: [],
-                linkTypeTree: {},
-            },
-            viewer: {
-                entries: [],
-            },
-            editor: {
-                parsedLinks: [],
-                body: '',
-                name: '',
-                entry: {},
-            },
-            viewedEntry: {},
-        },
-        mounted: function () {
-            //var self = this;
-            //var asyncCalls = 2;
-
-            //var maybeReady = function () {
-            //    --asyncCalls;
-            //    if (asyncCalls == 0) {
-            //        self.doneLoading();
-            //    }
-            //}
-
-            //api.getEntries(function (entries) {
-            //    self.entries = entries;
-            //    maybeReady();
-            //});
-            //api.getLinks(function (links) {
-            //    self.links = links;
-            //    self.links.forEach(function (item) {
-            //        if (!self.linkTypeTree[item.type]) {
-            //            self.linkTypeTree[item.type] = [];
-            //            self.linkTypes.push(item.type);
-            //        }
-
-            //        self.linkTypeTree[item.type].push(item);
-            //    });
-
-            //    self.linkTypeTree;
-            //    maybeReady();
-            //});
-            this.refreshEntries();
-        },
-        methods: {
-            refreshEntries: function () {
-                console.log('refresh-entries');
-                var self = this;
-                api.getEntries(function (entries) {
-                    self.entries = entries;
-                });
-            },
-
-            viewerLoad: function (entry) {
-                console.log('viewer-load');
-            },
-
-            editorSave: function () {
-                console.log('editor-save');
-            },
-            editorCancel: function () {
-                console.log('editor-cancel');
-            },
-            editorLoad: function (entry) {
-                console.log('editor-load');
-                this.editor.entry = entry;
-            },
-            editorResetToData: function () {
-                console.log('editor-reset-data');
-                this.editor.name = this.editor.entry.name;
-                this.editor.body = this.editor.entry.body;
-            },
-
-            startNewEntry: function () {
-                console.log('start-new-entry');
-            },
-
-            startNewLink: function () {
-                console.log('start-new-link');
-            },
-
-            linkViewerLoad: function (entry) {
-                console.log('link-viewer-load');
-            },
-
-            linkEditorLoad: function (entry) {
-                console.log('link-editor-load');
-            },
-            linkEditorResetToData: function () {
-                console.log('link-editor-reset-data');
-            },
-            linkEditorSave: function () {
-                console.log('link-editor-save');
-            },
-            linkEditorCancel: function () {
-                console.log('link-editor-cancel');
-            },
-        }
-    })
-
-</script>
+<script src="~/Scripts/JournalViewmodel.js"></script>

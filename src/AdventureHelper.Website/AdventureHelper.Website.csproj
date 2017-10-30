@@ -108,7 +108,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Scripts\JournalApi.js" />
-    <Content Include="Scripts\OLD\AdventureJournal.js" />
+    <Content Include="Scripts\JournalViewmodel.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +129,6 @@
     <Content Include="packages.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_Viewstart.cshtml" />
-    <Content Include="Views\Journal\OLD\Journal.cshtml" />
     <Content Include="Views\Journal\Journal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

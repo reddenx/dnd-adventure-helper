@@ -5,10 +5,6 @@
     self.body = body;
     self.id = id;
 
-    self.getParsedLinkNames = function () {
-        return parseTextForLinks(self.body);
-    }
-
     return self;
 }
 
@@ -19,10 +15,6 @@ var Link = function (name, type, body, id) {
     self.type = type;
     self.body = body;
     self.id = id;
-
-    self.getParsedLinkNames = function () {
-        return parseTextForLinks(self.body);
-    }
 
     return self;
 }
@@ -45,7 +37,7 @@ var JournalApi = function () {
         })
     }
 
-    self.saveLink = function (link) {
+    self.saveLink = function (link, callback) {
         $.ajax({
             url: 'api/links',
             type: 'POST',
@@ -58,7 +50,8 @@ var JournalApi = function () {
                 }
             }),
             dataType: 'json',
-            contentType: 'application/json'
+            contentType: 'application/json',
+            complete: function () { callback(); }
         })
     }
 
@@ -76,7 +69,7 @@ var JournalApi = function () {
         })
     }
 
-    self.saveEntry = function (entry) {
+    self.saveEntry = function (entry, callback) {
         $.ajax({
             url: 'api/entries',
             type: 'POST',
@@ -106,7 +99,7 @@ var parseTextForLinks = function (text) {
 
     var hashMatches = {};
     return matches.map(function (item) {
-        return item[1].replace('-', ' ');
+        return item[1];//.replace('-', ' ');
     }).filter(function (item) {
         return hashMatches.hasOwnProperty(item) ? false : (hashMatches[item] = true);
     });
