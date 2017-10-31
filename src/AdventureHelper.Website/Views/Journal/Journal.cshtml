@@ -122,7 +122,7 @@
                         <input class="form-control" type="text" v-model="editor.name" placeholder="name" />
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" placeholder="body" v-model="editor.body" v-on:keyup="editorBodyChanged"></textarea>
+                        <textarea class="form-control autosize-me" placeholder="body" v-model="editor.body" v-on:keyup="editorBodyChanged"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -189,7 +189,7 @@
                         <input class="form-control" type="text" v-model="linkEditor.type" />
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" type="text" v-model="linkEditor.body"></textarea>
+                        <textarea class="form-control autosize-me" type="text" v-model="linkEditor.body"></textarea>
                     </div>
 
                     <button type="button" class="btn btn-primary" v-on:click="linkEditorSave">Save</button>
@@ -265,3 +265,6 @@
 </div>
 <script src="~/Scripts/JournalApi.js"></script>
 <script src="~/Scripts/JournalViewmodel.js"></script>
+<script>
+    $('.autosize-me').autosize();
+</script>

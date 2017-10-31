@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\Autosize.js" />
     <Content Include="Scripts\JournalApi.js" />
     <Content Include="Scripts\JournalViewmodel.js" />
     <Content Include="Web.config" />
