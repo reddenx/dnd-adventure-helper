@@ -13,6 +13,10 @@
         width: 25rem;
     }
 
+    .content-text {
+        white-space: pre-line;
+    }
+
     .loading-spinner {
         display: inline-block;
         -moz-animation-name: loading-spinner;
@@ -98,7 +102,7 @@
                         <button class="btn btn-secondary btn-sm" v-on:click="viewerClose">back</button>
                     </div>
 
-                    <p class="card-text">
+                    <p class="card-text content-text">
                         <template v-for="contentItem in entryViewer.contentList">
                             <span v-if="contentItem.length">{{contentItem}}</span>
                             <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)">{{contentItem.name}}</button>
@@ -161,10 +165,10 @@
                         {{linkViewer.type}}
                     </div>
 
-                    <p class="card-text">
+                    <p class="card-text content-text">
                         <template v-for="contentItem in linkViewer.contentList">
                             <span v-if="contentItem.length">{{contentItem}}</span>
-                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)">{{contentItem.name}}</button>
+                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem)">{{contentItem.name}}</button>
                         </template>
                     </p>
 
