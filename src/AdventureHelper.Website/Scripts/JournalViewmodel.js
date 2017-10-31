@@ -272,5 +272,13 @@ var vm = new Vue({
             console.debug('start-new-link');
             this.linkEditorLoad({}, x, y);
         },
+
+        //getPositionStyleForPopover: function (x, y) {
+        //    //was  
+        //    if (x > window.innerWidth / 2) {
+        //        return { 'left': x + 'px', 'top': y + 'px' };
+        //    }
+        //    return { 'right': x + 'px', 'top': y + 'px' };
+        //}
     }
 });
