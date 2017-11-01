@@ -116,6 +116,9 @@ var vm = new Vue({
             });
         },
         loadFromModal: function () {
+            if (this.characterEntry.characterName.length <= 0)
+                return;
+
             this.refreshEntries();
             this.refreshLinks();
             $('#character-modal').modal('hide');
