@@ -109,6 +109,8 @@ var vm = new Vue({
 
         //character entry
         showCharacterModal: function () {
+            console.debug('show-character-modal');
+
             $('#character-modal').modal({
                 show: true,
                 backdrop: 'static',
@@ -116,6 +118,8 @@ var vm = new Vue({
             });
         },
         loadFromModal: function () {
+            console.debug('load-from-modal');
+
             if (this.characterEntry.characterName.length <= 0)
                 return;
 
@@ -126,8 +130,11 @@ var vm = new Vue({
 
         //entry list viewer
         entryListRefresh: function () {
+            console.debug('entry-list-refresh');
         },
         showEntryList: function () {
+            console.debug('show-entry-list');
+
             this.entryViewer.show = false;
             this.editor.show = false;
             this.entryListViewer.show = true;
@@ -143,9 +150,13 @@ var vm = new Vue({
             this.showViewer();
         },
         viewerClose: function () {
+            console.debug('viewer-close');
+
             this.showEntryList();
         },
         showViewer: function () {
+            console.debug('show-viewer');
+
             this.entryViewer.show = true;
             this.editor.show = false;
             this.entryListViewer.show = false;
@@ -186,6 +197,8 @@ var vm = new Vue({
             this.editorBodyChanged();
         },
         editorBodyChanged: _.debounce(function () {
+            console.debug('editor-body-changed');
+
             var linkNames = parseTextForLinks(this.editor.body);
 
             this.editor.parsedLinks = [];
@@ -200,6 +213,8 @@ var vm = new Vue({
             });
         }, 1200),
         showEditor: function () {
+            console.debug('show-editor');
+
             this.entryViewer.show = false;
             this.editor.show = true;
             this.entryListViewer.show = false;
@@ -213,6 +228,8 @@ var vm = new Vue({
 
         //link list
         linkListRefresh: function () {
+            console.debug('link-list-refresh');
+
             this.linkList.linkTypes = _.uniq(this.links.map(function (link) { return link.type; }));
             this.linkList.linkTypeTree = {};
             var self = this;
