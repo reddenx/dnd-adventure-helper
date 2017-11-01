@@ -1,74 +1,6 @@
-﻿<style>
-    .btn-inline {
-        padding: 0 .2rem;
-    }
-
-    .link-viewer-container {
-        position: absolute;
-        width: 25rem;
-    }
-
-    .link-editor-container {
-        position: absolute;
-        width: 25rem;
-    }
-
-    .content-text {
-        white-space: pre-line;
-    }
-
-    .loading-spinner {
-        display: inline-block;
-        -moz-animation-name: loading-spinner;
-        -o-animation-name: loading-spinner;
-        -webkit-animation-name: loading-spinner;
-        animation-name: loading-spinner;
-        -moz-animation-iteration-count: infinite;
-        -o-animation-iteration-count: infinite;
-        -webkit-animation-iteration-count: infinite;
-        animation-iteration-count: infinite;
-        -moz-animation-timing-function: linear;
-        -o-animation-timing-function: linear;
-        -webkit-animation-timing-function: linear;
-        animation-timing-function: linear;
-        -moz-animation-duration: 4000ms;
-        -o-animation-duration: 4000ms;
-        -webkit-animation-duration: 4000ms;
-        animation-duration: 4000ms;
-    }
-
-    @@keyframes loading-spinner {
-        from {
-            transform: rotate(0deg);
-        }
-
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    @@-moz-keyframes loading-spinner {
-        from {
-            -moz-transform: rotate(0deg);
-        }
-
-        to {
-            -moz-transform: rotate(360deg);
-        }
-    }
-
-    @@-webkit-keyframes loading-spinner {
-        from {
-            -webkit-transform: rotate(0deg);
-        }
-
-        to {
-            -webkit-transform: rotate(360deg);
-        }
-    }
-</style>
-
-
+﻿@section head {
+    <link rel="stylesheet" href="~/Style/journal.css" />
+}
 
 <div class="container pt-3" id="bound-context">
 
@@ -158,11 +90,13 @@
                 <div class="card-body">
                     <div class="text-right clearfix">
                         <h4 class="float-left">{{linkViewer.name}}</h4>
-                        <button class="btn btn-sm btn-secondary" v-on:click="linkViewerClose">X</button>
+                        <button type="button" class="close" aria-label="Close" v-on:click="linkViewerClose">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
 
                     <div class="text-muted">
-                        {{linkViewer.type}}
+                        {{linkViewer.type}} <span v-show="linkViewer.shared">(shared)</span>
                     </div>
 
                     <p class="card-text content-text">
@@ -181,15 +115,30 @@
         <div class="link-editor-container" v-show="linkEditor.show" v-bind:style="{ top: linkEditor.position.y + 'px', left: Math.min(linkEditor.position.x, window.innerWidth - 400) + 'px' }">
             <div class="card">
                 <div class="card-body">
-                    <div class="form-group">
-                        <input class="form-control" type="text" v-model="linkEditor.name" />
+                    <div class="form-group mb-2">
+                        <input class="form-control" type="text" v-model="linkEditor.name" placeholder="name" />
+                    </div>
+
+                    <div class="form-row mb-2 align-items-center">
+
+                        <div class="col-auto">
+                            <input class="form-control" type="text" v-model="linkEditor.type" placeholder="type"/>
+                        </div>
+
+                        <div class="col-auto text-ri">
+                            <div class="btn btn-outline-primary" style="width: 5em;" v-show="!linkEditor.shared" v-on:click="linkEditor.shared = true">
+                                Private
+                            </div>
+
+                            <div class="btn btn-primary" style="width: 5em;" v-show="linkEditor.shared" v-on:click="linkEditor.shared = false">
+                                Public
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="form-group">
-                        <input class="form-control" type="text" v-model="linkEditor.type" />
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control autosize-me" type="text" v-model="linkEditor.body"></textarea>
+                        <textarea class="form-control autosize-me" type="text" v-model="linkEditor.body" placeholder="description"></textarea>
                     </div>
 
                     <button type="button" class="btn btn-primary" v-on:click="linkEditorSave">Save</button>
@@ -199,70 +148,30 @@
         </div>
     </div>
 
-    <div class="row">
 
-        @* left navigation column *@
-        @*<div class="col-8 text-center" v-show="mode === 'browsing'">
-                <h4>Entries</h4>
-                <button type="button" class="btn btn-primary" v-on:click="startNewEntry">+ New</button>
 
-                <ul class="list-group">
-                    <li class="list-group-item" v-for="entry in entries">
-                        <a href="#" class="nav-link" v-on:click="viewEntry(entry)">{{entry.name}}</a>
-                    </li>
-                </ul>
-            </div>*@
-
-        @* left viewing column  *@
-        @*<div class="col-8" v-show="mode === 'viewing'">
-                <div class="card">
-                    <div class="card-body">
-                        <h4>{{viewedEntry.name}} <button v-on:click="closeViewedEntry" class="btn btn-secondary float-right">X</button></h4>
-                        <p class="card-text">{{viewedEntry.body}}</p>
+    <div id="character-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Load Character Journal</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" v-model="characterEntry.characterName" placeholder="character name" />
                     </div>
                 </div>
-            </div>*@
-
-        @* left editing column *@
-        @*<div class="col-8" v-show="mode === 'editing'">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <input type="text" placeholder="Entry Name" class="form-control" v-model="editor.name" />
-                            </div>
-                            <div class="form-group">
-                                <button type="button" v-on:click="editorSaveEntry" class="btn btn-primary ml-3">save</button>
-                                <button type="button" v-on:click="editorCancelEdits" class="btn btn-secondary ml-3">cancel</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea placeholder="body" class="form-control" v-modl="editor.body"></textarea>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="loadFromModal">Load</button>
                 </div>
-            </div>*@
-
-        @* right link list column *@
-        @*<div class="col-4 text-center">
-                <h4>Links</h4>
-                <button type="button" class="btn btn-primary" v-on:click="startNewLink">+ New</button>
-
-                <div class="row">
-
-                    <button type="button" class="btn btn-secondary" v-for="link in links">
-                        {{link.name}}
-                    </button>
-                </div>
-            </div>*@
-
-
-        <div class="">
-
+            </div>
         </div>
-
     </div>
 </div>
+
+
+
+
 <script src="~/Scripts/JournalApi.js"></script>
 <script src="~/Scripts/JournalViewmodel.js"></script>
 <script>

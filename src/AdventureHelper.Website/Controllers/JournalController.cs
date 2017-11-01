@@ -26,11 +26,17 @@ namespace AdventureHelper.Website.Controllers
             return View();
         }
 
-        [Route("api/entries")]
+        [Route("api/entries/{characterName}")]
         [HttpGet]
-        public JsonResult Entries()
+        public ActionResult Entries(string characterName)
         {
-            var entries = JournalRepository.Get();
+            if (string.IsNullOrWhiteSpace(characterName))
+                return HttpNotFound();
+
+            var entries = JournalRepository.Get()
+                .Where(entry => entry.CharacterOwner?.Equals(characterName, StringComparison.CurrentCultureIgnoreCase) == true)
+                .ToArray();
+            
             return Json(entries, JsonRequestBehavior.AllowGet);
         }
 
@@ -41,11 +47,18 @@ namespace AdventureHelper.Website.Controllers
             JournalRepository.Save(data);
         }
 
-        [Route("api/links")]
+        [Route("api/links/{characterName}")]
         [HttpGet]
-        public JsonResult Links()
+        public ActionResult Links(string characterName)
         {
-            var links = LinkRepository.Get();
+            if (string.IsNullOrWhiteSpace(characterName))
+                return HttpNotFound();
+
+            var links = LinkRepository.Get()
+                .Where(link => link.CharacterOwner?.Equals(characterName, StringComparison.CurrentCultureIgnoreCase) == true
+                    || link.Shared)
+                .ToArray();
+
             return Json(links, JsonRequestBehavior.AllowGet);
         }
 

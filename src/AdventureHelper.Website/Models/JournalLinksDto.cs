@@ -11,5 +11,8 @@ namespace AdventureHelper.Website.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public string Body { get; set; }
+
+        public bool Shared { get; set; }
+        public string CharacterOwner { get; set; }
     }
 }

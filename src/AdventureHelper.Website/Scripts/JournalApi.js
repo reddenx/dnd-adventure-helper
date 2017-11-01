@@ -8,12 +8,13 @@
     return self;
 }
 
-var Link = function (name, type, body, id) {
+var Link = function (name, type, body, id, shared) {
     var self = this;
 
     self.name = name;
     self.type = type;
     self.body = body;
+    self.shared = shared,
     self.id = id;
 
     return self;
@@ -23,21 +24,21 @@ var JournalApi = function () {
     var self = this;
     var m = {};
 
-    self.getLinks = function (callback) {
+    self.getLinks = function (characterName, callback) {
         $.ajax({
-            url: 'api/links',
+            url: 'api/links/' + characterName,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json',
             success: function (data) {
                 callback(data.map(function (item) {
-                    return new Link(item.Name, item.Type, item.Body, item.Id);
+                    return new Link(item.Name, item.Type, item.Body, item.Id, item.Shared);
                 }));
             }
         })
     }
 
-    self.saveLink = function (link, callback) {
+    self.saveLink = function (characterName, link, callback) {
         $.ajax({
             url: 'api/links',
             type: 'POST',
@@ -46,6 +47,8 @@ var JournalApi = function () {
                     Name: link.name,
                     Type: link.type,
                     Body: link.body,
+                    Shared: link.shared,
+                    CharacterOwner: characterName,
                     Id: link.id
                 }
             }),
@@ -55,9 +58,9 @@ var JournalApi = function () {
         })
     }
 
-    self.getEntries = function (callback) {
+    self.getEntries = function (characterName, callback) {
         $.ajax({
-            url: 'api/entries',
+            url: 'api/entries/' + characterName,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/Json',
@@ -69,7 +72,7 @@ var JournalApi = function () {
         })
     }
 
-    self.saveEntry = function (entry, callback) {
+    self.saveEntry = function (characterName, entry, callback) {
         $.ajax({
             url: 'api/entries',
             type: 'POST',
@@ -77,6 +80,7 @@ var JournalApi = function () {
                 data: {
                     Name: entry.name,
                     Body: entry.body,
+                    CharacterOwner: characterName,
                     Id: entry.id,
                 }
             }),

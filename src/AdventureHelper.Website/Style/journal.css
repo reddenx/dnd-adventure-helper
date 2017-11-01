@@ -1,0 +1,67 @@
+﻿.btn-inline {
+    padding: 0 .2rem;
+}
+
+.link-viewer-container {
+    position: absolute;
+    width: 25rem;
+}
+
+.link-editor-container {
+    position: absolute;
+    width: 25rem;
+}
+
+.content-text {
+    white-space: pre-line;
+}
+
+.loading-spinner {
+    display: inline-block;
+    -moz-animation-name: loading-spinner;
+    -o-animation-name: loading-spinner;
+    -webkit-animation-name: loading-spinner;
+    animation-name: loading-spinner;
+    -moz-animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -o-animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -moz-animation-duration: 4000ms;
+    -o-animation-duration: 4000ms;
+    -webkit-animation-duration: 4000ms;
+    animation-duration: 4000ms;
+}
+
+@keyframes loading-spinner {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes loading-spinner {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes loading-spinner {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}

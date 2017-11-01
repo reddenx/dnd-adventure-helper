@@ -110,6 +110,7 @@
     <Content Include="Scripts\Autosize.js" />
     <Content Include="Scripts\JournalApi.js" />
     <Content Include="Scripts\JournalViewmodel.js" />
+    <Content Include="Style\journal.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

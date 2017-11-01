@@ -25,6 +25,7 @@ var vm = new Vue({
             name: 'linkeditor-name',
             type: 'linkeditor-type',
             body: 'linkeditor',
+            shared: false,
             position: { x: 0, y: 0, },
             savedData: {},
             parsedLinks: [],
@@ -49,10 +50,13 @@ var vm = new Vue({
         entryListViewer: {
             show: true,
         },
+
+        characterEntry: {
+            characterName: '',
+        }
     },
     mounted: function () {
-        this.refreshEntries();
-        this.refreshLinks();
+        this.showCharacterModal();
     },
     methods: {
         refreshEntries: function () {
@@ -60,7 +64,7 @@ var vm = new Vue({
             this.asyncOperationsCount += 1;
 
             var self = this;
-            api.getEntries(function (entries) {
+            api.getEntries(this.characterEntry.characterName, function (entries) {
                 self.entries = [];
                 self.entries = entries;
                 self.asyncOperationsCount -= 1;
@@ -72,7 +76,7 @@ var vm = new Vue({
             this.asyncOperationsCount += 1;
 
             var self = this;
-            api.getLinks(function (links) {
+            api.getLinks(this.characterEntry.characterName, function (links) {
                 self.links = links;
                 self.asyncOperationsCount -= 1;
                 self.linkListRefresh();
@@ -101,6 +105,20 @@ var vm = new Vue({
                 }
             });
             return contentList;
+        },
+
+        //character entry
+        showCharacterModal: function () {
+            $('#character-modal').modal({
+                show: true,
+                backdrop: 'static',
+                keyboard: false,
+            });
+        },
+        loadFromModal: function () {
+            this.refreshEntries();
+            this.refreshLinks();
+            $('#character-modal').modal('hide');
         },
 
         //entry list viewer
@@ -137,7 +155,7 @@ var vm = new Vue({
             var newEntry = new JournalEntry(this.editor.name, this.editor.body, this.editor.savedData.id);
             this.editor.asyncActions++;
             var self = this;
-            api.saveEntry(newEntry, function () {
+            api.saveEntry(this.characterEntry.characterName, newEntry, function () {
                 self.editor.asyncActions--;
                 self.refreshEntries();
             });
@@ -211,6 +229,7 @@ var vm = new Vue({
             this.linkViewer.name = link.name;
             this.linkViewer.type = link.type;
             this.linkViewer.body = link.body;
+            this.linkViewer.shared = link.shared;
 
             this.linkViewer.contentList = [];
             this.linkViewer.contentList = this.getLinkedContentFromText(link.body);
@@ -247,15 +266,16 @@ var vm = new Vue({
             this.linkEditor.name = this.linkEditor.savedData.name;
             this.linkEditor.type = this.linkEditor.savedData.type;
             this.linkEditor.body = this.linkEditor.savedData.body;
+            this.linkEditor.shared = this.linkEditor.savedData.shared;
         },
         linkEditorSave: function () {
             console.debug('link-editor-save');
 
-            var newLink = new Link(this.linkEditor.name, this.linkEditor.type, this.linkEditor.body, this.linkEditor.savedData.id);
+            var newLink = new Link(this.linkEditor.name, this.linkEditor.type, this.linkEditor.body, this.linkEditor.savedData.id, this.linkEditor.shared);
 
             this.linkEditor.asyncActions++;
             var self = this;
-            api.saveLink(newLink, function () {
+            api.saveLink(this.characterEntry.characterName, newLink, function () {
                 console.debug('link-editor-save-sucess');
 
                 self.linkEditor.asyncActions--;
