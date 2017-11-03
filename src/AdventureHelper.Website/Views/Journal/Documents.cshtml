@@ -1,0 +1,18 @@
+﻿@model AdventureHelper.Website.Models.Documents.Document[]
+
+<div class="container">
+    @foreach (var doc in Model)
+    {
+        <div class="row">
+            <div class="col-4">
+                @doc.Title
+            </div>
+            <div class="col-4">
+                @doc.DocumentType
+            </div>
+            <div class="col-4">
+                @doc.DateLastModified.ToShortDateString() - @doc.DateLastModified.ToShortTimeString()
+            </div>
+        </div>
+    }
+</div>

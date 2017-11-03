@@ -68,5 +68,15 @@ namespace AdventureHelper.Website.Controllers
             var newLink = JournalMan.SaveLink(data, userId);
             return Json(newLink);
         }
+
+
+        [Route("documents")]
+        [HttpGet]
+        public ViewResult Documents()
+        {
+            var repo = new SimpleFileBank<Document>(new Configuration().DocumentsPath);
+            var docs = repo.Get();
+            return View(docs);
+        }
     }
 }
