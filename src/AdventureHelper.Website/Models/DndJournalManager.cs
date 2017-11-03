@@ -35,14 +35,14 @@ namespace AdventureHelper.Website.Models
         {
             return AllDocuments
                 .Where(d => d.DocumentType == EntryMetaKeys.DocumentType)
+                .Where(d => d.OwnerId == userId)
                 .Select(d => DocToJournal(d))
-                .Where(j => j.OwnerId == userId)
                 .ToArray();
         }
 
         internal CharacterDto GetOrCreateCharacter(string characterName)
         {
-            var character = AllDocuments.FirstOrDefault(d => d.DocumentType == CharacterMetaKeys.DocumentType && d.Title == characterName);
+            var character = AllDocuments.FirstOrDefault(d => d.DocumentType == CharacterMetaKeys.DocumentType && d.Title.Equals(characterName, StringComparison.CurrentCultureIgnoreCase));
             if (character != null)
                 return DocToCharacter(character);
 
@@ -74,12 +74,12 @@ namespace AdventureHelper.Website.Models
         {
             if (entry.Id.HasValue)
             {
-                if (entry.OwnerId != userId)
+                var existingDocument = AllDocuments.Single(d => d.Id == entry.Id.Value);
+                if (existingDocument.OwnerId != userId)
                 {
                     throw new UnauthorizedAccessException("Cannot save someone else's entry");
                 }
 
-                var existingDocument = AllDocuments.Single(d => d.Id == entry.Id.Value);
                 existingDocument.Body = entry.Body;
                 existingDocument.DateLastModified = DateTime.Now;
                 existingDocument.Title = entry.Name;
@@ -153,8 +153,7 @@ namespace AdventureHelper.Website.Models
             return new JournalEntryDto(
                     body: doc.Body,
                     id: doc.Id,
-                    name: doc.Title,
-                    ownerId: doc.OwnerId);
+                    name: doc.Title);
         }
 
         private JournalLinksDto DocToLink(Document doc)

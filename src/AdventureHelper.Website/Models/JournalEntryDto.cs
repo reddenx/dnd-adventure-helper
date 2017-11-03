@@ -10,14 +10,12 @@ namespace AdventureHelper.Website.Models
         public Guid? Id { get; set; }
         public string Name { get; set; }
         public string Body { get; set; }
-        public Guid OwnerId { get; set; }
 
-        public JournalEntryDto(Guid? id, string name, string body, Guid ownerId)
+        public JournalEntryDto(Guid? id, string name, string body)
         {
             this.Id = id;
             this.Name = name;
             this.Body = body;
-            this.OwnerId = OwnerId;
         }
     }
 }
