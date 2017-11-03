@@ -34,7 +34,7 @@ namespace AdventureHelper.Website.Controllers
         public ActionResult Characters(string characterName)
         {
             var character = JournalMan.GetOrCreateCharacter(characterName);
-            return Json(character.Id, JsonRequestBehavior.AllowGet);
+            return Json(character, JsonRequestBehavior.AllowGet);
         }
 
         [Route("api/entries/{userId:guid}")]

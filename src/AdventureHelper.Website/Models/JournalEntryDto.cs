@@ -11,6 +11,8 @@ namespace AdventureHelper.Website.Models
         public string Name { get; set; }
         public string Body { get; set; }
 
+        public JournalEntryDto() { }
+
         public JournalEntryDto(Guid? id, string name, string body)
         {
             this.Id = id;

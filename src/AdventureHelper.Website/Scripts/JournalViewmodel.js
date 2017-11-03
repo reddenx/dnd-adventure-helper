@@ -128,12 +128,12 @@ var vm = new Vue({
             this.characterEntry.busy = true;
             var self = this;
             api.getCharacter(this.characterEntry.characterName, function (character) {
-                self.userId = character.userId;
+                self.userId = character.id;
+                self.refreshEntries();
+                self.refreshLinks();
+                self.characterEntry.busy = false;
+                $('#character-modal').modal('hide');
             });
-
-            this.refreshEntries();
-            this.refreshLinks();
-            $('#character-modal').modal('hide');
         },
 
         //entry list viewer

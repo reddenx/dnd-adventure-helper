@@ -15,6 +15,8 @@ namespace AdventureHelper.Website.Models
         public bool Shared { get; set; }
         public Guid OwnerId { get; set; }
 
+        public JournalLinksDto() { }
+
         public JournalLinksDto(Guid? id, string name, string type, string body, bool shared, Guid ownerId)
         {
             this.Id = id;
@@ -22,7 +24,7 @@ namespace AdventureHelper.Website.Models
             this.Type = type;
             this.Body = body;
             this.Shared = shared;
-            this.OwnerId = OwnerId;
+            this.OwnerId = ownerId;
         }
     }
 }
