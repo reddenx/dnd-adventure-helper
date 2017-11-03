@@ -36,7 +36,7 @@ var JournalApi = function () {
 
     self.getCharacter = function (characterName, callback) {
         $.ajax({
-            url: 'api/characters/' + characterName,
+            url: '/journal/api/characters/' + characterName,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json',
@@ -48,7 +48,7 @@ var JournalApi = function () {
 
     self.getLinks = function (userId, callback) {
         $.ajax({
-            url: 'api/links/' + userId,
+            url: '/journal/api/links/' + userId,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json',
@@ -62,7 +62,7 @@ var JournalApi = function () {
 
     self.saveLink = function (userId, link, callback) {
         $.ajax({
-            url: 'api/links/' + userId,
+            url: '/journal/api/links/' + userId,
             type: 'POST',
             data: JSON.stringify({
                 data: {
@@ -82,7 +82,7 @@ var JournalApi = function () {
 
     self.getEntries = function (userId, callback) {
         $.ajax({
-            url: 'api/entries/' + userId,
+            url: '/journal/api/entries/' + userId,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/Json',
@@ -96,7 +96,7 @@ var JournalApi = function () {
 
     self.saveEntry = function (userId, entry, callback) {
         $.ajax({
-            url: 'api/entries/' + userId,
+            url: '/journal/api/entries/' + userId,
             type: 'POST',
             data: JSON.stringify({
                 data: {
