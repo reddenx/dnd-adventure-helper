@@ -9,7 +9,7 @@ namespace AdventureHelper.Website.Models
 {
     public interface IIdentifiable
     {
-        Guid? Id { get; set; }
+        Guid Id { get; set; }
     }
 
     public class SimpleFileBank<T> where T : IIdentifiable
@@ -36,11 +36,6 @@ namespace AdventureHelper.Website.Models
 
         public void Save(T data)
         {
-            if (!data.Id.HasValue)
-            {
-                data.Id = Guid.NewGuid();
-            }
-
             var updatedEntryList = Get().Where(e => e.Id != data.Id).Concat(new[] { data }).ToArray();
 
             var rawData = JsonConvert.SerializeObject(updatedEntryList);

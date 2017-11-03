@@ -1,4 +1,5 @@
 ﻿using AdventureHelper.Website.Models;
+using AdventureHelper.Website.Models.Documents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,12 @@ namespace AdventureHelper.Website.Controllers
     [RoutePrefix("journal")]
     public class JournalController : Controller
     {
-        private readonly SimpleFileBank<JournalEntryDto> JournalRepository;
-        private readonly SimpleFileBank<JournalLinksDto> LinkRepository;
+        private readonly DndJournalManager JournalMan;
 
         public JournalController()
         {
             var configuration = new Configuration();
-            JournalRepository = new SimpleFileBank<JournalEntryDto>(configuration.JournalFilePath);
-            LinkRepository = new SimpleFileBank<JournalLinksDto>(configuration.LinkFilePath);
+            JournalMan = new DndJournalManager(new SimpleFileBank<Document>(configuration.DocumentsPath));
         }
 
         [Route("")]
@@ -26,52 +25,48 @@ namespace AdventureHelper.Website.Controllers
             return View();
         }
 
-        [Route("api/entries/{characterName}")]
-        [HttpGet]
-        public ActionResult Entries(string characterName)
-        {
-            if (string.IsNullOrWhiteSpace(characterName))
-                return HttpNotFound();
+        //todos.....
+        //- get real auth on characters instead of guid passing and name dropping.
+        //- json file repo is a joke that's gone too far
 
-            var entries = JournalRepository.Get()
-                .Where(entry => entry.CharacterOwner?.Equals(characterName, StringComparison.CurrentCultureIgnoreCase) == true)
-                .ToArray();
-            
+        [Route("api/characters/{characterName}")]
+        [HttpGet]
+        public ActionResult Characters(string characterName)
+        {
+            var character = JournalMan.GetOrCreateCharacter(characterName);
+            return Json(character, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("api/entries/{userId:guid}")]
+        [HttpGet]
+        public ActionResult Entries(Guid userId)
+        {
+            var entries = JournalMan.GetJournalEntries(userId);
             return Json(entries, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("api/entries")]
+        [Route("api/entries/{userId:guid}")]
         [HttpPost]
-        public void SaveEntry(JournalEntryDto data)
+        public JsonResult SaveEntry(Guid userId, JournalEntryDto data)
         {
-            JournalRepository.Save(data);
+            var newEntry = JournalMan.SaveJournalEntry(data, userId);
+            return Json(newEntry);
         }
 
-        [Route("api/links/{characterName}")]
+        [Route("api/links/{userId:guid}")]
         [HttpGet]
-        public ActionResult Links(string characterName)
+        public ActionResult Links(Guid userId)
         {
-            if (string.IsNullOrWhiteSpace(characterName))
-                return HttpNotFound();
-
-            var links = LinkRepository.Get()
-                .Where(link => link.CharacterOwner?.Equals(characterName, StringComparison.CurrentCultureIgnoreCase) == true
-                    || link.Shared)
-                .ToArray();
-
+            var links = JournalMan.GetJournalLinks(userId);
             return Json(links, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("api/links")]
+        [Route("api/links/{userId:guid}")]
         [HttpPost]
-        public void SaveLink(JournalLinksDto data)
+        public JsonResult SaveLink(Guid userId, JournalLinksDto data)
         {
-            LinkRepository.Save(data);
-        }
-
-        public PartialViewResult JournalViewComponent()
-        {
-            return PartialView();
+            var newLink = JournalMan.SaveLink(data, userId);
+            return Json(newLink);
         }
     }
 }

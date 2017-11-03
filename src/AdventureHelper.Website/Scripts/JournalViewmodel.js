@@ -7,6 +7,7 @@ var vm = new Vue({
     data: {
         entries: [],
         links: [],
+        userId: '',
         asyncOperationsCount: 0,
 
         linkViewer: {
@@ -52,6 +53,7 @@ var vm = new Vue({
         },
 
         characterEntry: {
+            busy: false,
             characterName: '',
         }
     },
@@ -64,7 +66,7 @@ var vm = new Vue({
             this.asyncOperationsCount += 1;
 
             var self = this;
-            api.getEntries(this.characterEntry.characterName, function (entries) {
+            api.getEntries(this.userId, function (entries) {
                 self.entries = [];
                 self.entries = entries;
                 self.asyncOperationsCount -= 1;
@@ -76,7 +78,7 @@ var vm = new Vue({
             this.asyncOperationsCount += 1;
 
             var self = this;
-            api.getLinks(this.characterEntry.characterName, function (links) {
+            api.getLinks(this.userId, function (links) {
                 self.links = links;
                 self.asyncOperationsCount -= 1;
                 self.linkListRefresh();
@@ -123,9 +125,15 @@ var vm = new Vue({
             if (this.characterEntry.characterName.length <= 0)
                 return;
 
-            this.refreshEntries();
-            this.refreshLinks();
-            $('#character-modal').modal('hide');
+            this.characterEntry.busy = true;
+            var self = this;
+            api.getCharacter(this.characterEntry.characterName, function (character) {
+                self.userId = character.id;
+                self.refreshEntries();
+                self.refreshLinks();
+                self.characterEntry.busy = false;
+                $('#character-modal').modal('hide');
+            });
         },
 
         //entry list viewer
@@ -169,7 +177,7 @@ var vm = new Vue({
             var newEntry = new JournalEntry(this.editor.name, this.editor.body, this.editor.savedData.id);
             this.editor.asyncActions++;
             var self = this;
-            api.saveEntry(this.characterEntry.characterName, newEntry, function () {
+            api.saveEntry(this.userId, newEntry, function () {
                 self.editor.asyncActions--;
                 self.refreshEntries();
             });
@@ -295,7 +303,7 @@ var vm = new Vue({
 
             this.linkEditor.asyncActions++;
             var self = this;
-            api.saveLink(this.characterEntry.characterName, newLink, function () {
+            api.saveLink(this.userId, newLink, function () {
                 console.debug('link-editor-save-sucess');
 
                 self.linkEditor.asyncActions--;

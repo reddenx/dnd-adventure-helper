@@ -8,10 +8,7 @@ namespace AdventureHelper.Website.Models
 {
     public class Configuration : ConfigurationBase
     {
-        [AppSettings("JournalFilePath")]
-        public readonly string JournalFilePath;
-
-        [AppSettings("LinkFilePath")]
-        public readonly string LinkFilePath;
+        [AppSettings("documentFilePath")]
+        public readonly string DocumentsPath;
     }
 }

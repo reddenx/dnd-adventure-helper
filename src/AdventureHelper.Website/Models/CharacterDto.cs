@@ -5,19 +5,17 @@ using System.Web;
 
 namespace AdventureHelper.Website.Models
 {
-    public class JournalEntryDto
+    public class CharacterDto
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Body { get; set; }
 
-        public JournalEntryDto() { }
+        public CharacterDto() { }
 
-        public JournalEntryDto(Guid? id, string name, string body)
+        public CharacterDto(Guid id, string name)
         {
             this.Id = id;
             this.Name = name;
-            this.Body = body;
         }
     }
 }

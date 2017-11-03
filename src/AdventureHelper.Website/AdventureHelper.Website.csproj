@@ -119,7 +119,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CharacterDto.cs" />
     <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\Documents\Document.cs" />
+    <Compile Include="Models\DndJournalManager.cs" />
     <Compile Include="Models\JournalEntryDto.cs" />
     <Compile Include="Models\JournalLinksDto.cs" />
     <Compile Include="Models\SimpleFileBank.cs" />
