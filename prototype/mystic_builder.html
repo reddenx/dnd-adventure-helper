@@ -1,0 +1,440 @@
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://vuejs.org/js/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+    <div class="container" id="bound-context">
+        <div class="row">
+            <div class="col-12">
+                <h5>Mystic Builder</h5>
+            </div>
+        </div>
+
+        <!-- inputs -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h5 class="card-title float-left">Class ({{classFeatures.length}})</h5>
+                        <button type="button" class="btn btn-primary" v-on:click="showClass = !showClass">Toggle</button>
+                    </div>
+                    <div class="card-body" v-show="showClass">
+
+                        <!-- class features -->
+                        <div class="card" v-for="feature in classFeatures">
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" v-on:click="removeClassFeature(feature)">Remove Feature</button>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="feature.name" placeholder="feature name" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" v-model="feature.level" placeholder="level" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="feature.action" placeholder="action" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="feature.description" placeholder="description" v-on:keyup="feature.tryParseActionFromDescription" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-block" v-on:click="addClassFeature">Add Class Feature</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h5 class="card-title float-left">School ({{schools.length}})</h5>
+                        <button type="button" class="btn btn-primary" v-on:click="showSchools = !showSchools">Toggle</button>
+                    </div>
+                    <div class="card-body" v-show="showSchools">
+                        <!-- schools -->
+                        <div class="card mb-2" v-for="school in schools">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" v-on:click="removeSchool(school)">Remove School</button>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="school.name" placeholder="school name" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="school.description" placeholder="description " />
+                                </div>
+
+                                <!-- school features -->
+                                <div class="card" v-for="feature in school.features">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-secondary" v-on:click="school.removeFeature(feature)">Remove Feature</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" v-model="feature.name" placeholder="feature name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" v-model="feature.level" placeholder="level" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" v-model="feature.action" placeholder="action" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" v-model="feature.description" placeholder="description" v-on:keyup="feature.tryParseActionFromDescription" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block" v-on:click="school.addFeature">Add School Feature</button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-block" v-on:click="addSchool">Add School</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h5 class="card-title float-left">disciplines ({{disciplines.length}})</h5>
+                        <button type="button" class="btn btn-primary" v-on:click="showDisciplines = !showDisciplines">Toggle</button>
+                    </div>
+                    <div class="card-body" v-show="showDisciplines">
+
+                        <div class="card" v-for="discipline in disciplines">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" v-on:click="removeDiscipline(discipline)">Remove Discipline</button>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="discipline name" v-model="discipline.name" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="discipline school" v-model="discipline.school" />
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="description" v-model="discipline.description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="focus" v-model="discipline.focus"></textarea>
+                                </div>
+
+                                <div class="card" v-for="feature in discipline.features">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-secondary" v-on:click="discipline.removeFeature(feature)">Remove</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="feature name" v-model="feature.name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="action type" v-model="feature.action" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="cost" v-model="feature.cost" />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea typeof="text" class="form-control" v-model="feature.description" v-on:keyup="feature.tryParseActionFromDescription"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary" v-on:click="discipline.addFeature">Add Feature</button>
+
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" v-on:click="addDiscipline">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h5 class="card-title float-left">talents ({{talents.length}})</h5>
+                        <button type="button" class="btn btn-primary" v-on:click="showTalents = !showTalents">Toggle</button>
+                    </div>
+                    <div class="card-body" v-show="showTalents">
+                        <div class="card" v-for="talent in talents">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" v-on:click="removeTalent(talent)">remove</button>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="name" v-model="talent.name" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="action" v-model="talent.action" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="description" v-model="talent.description" v-on:keyup="talent.tryParseActionFromDescription" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn btn-primary btn-block" v-on:click="addTalent">Add Talent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">EXPORT</h5>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary" v-on:click="exportJson">Refresh</button>
+                        <pre>{{rawJson}}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">IMPORT</h5>
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" v-model="rawJsonInput"></textarea>
+                        <button type="button" class="btn btn-primary btn-block" v-on:click="loadFromJson">Load</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            new Vue({
+                el: '#bound-context',
+                data: {
+                    showDisciplines: false,
+                    disciplines: [],
+                    showTalents: false,
+                    talents: [],
+                    showSchools: false,
+                    schools: [],
+
+                    showClass: false,
+                    classFeatures: [],
+
+                    rawJsonInput: '',
+                    rawJson: '',
+                },
+                computed: {
+                },
+                mounted: function () { },
+                methods: {
+                    exportJson: function () {
+                        this.rawJson = JSON.stringify({
+                            disciplines: this.disciplines,
+                            talents: this.talents,
+                            schools: this.schools,
+                            classFeatures: this.classFeatures,
+                        });
+                    },
+                    loadFromJson: function () {
+                        var obj = JSON.parse(this.rawJsonInput);
+                        if (obj.disciplines) {
+                            this.disciplines = obj.disciplines.map(function (disc) {
+                                return new Discipline(disc.name, disc.school, disc.description, disc.focus, disc.features.map(function (feat) {
+                                    return new DisciplineFeature(feat.name, feat.action, feat.cost, feat.description);
+                                }));
+                            });
+                        }
+                        if (obj.talents) {
+                            this.talents = obj.talents.map(function (talent) {
+                                return new Talent(talent.name, talent.description, talent.action);
+                            });
+                        }
+                        if (obj.schools) {
+                            this.schools = obj.schools.map(function (school) {
+                                return new School(school.name, school.description, school.features.map(function (feature) {
+                                    return new GeneralFeature(feature.name, feature.level, feature.description, feature.action);
+                                }));
+                            });
+                        }
+                        if (obj.classFeatures) {
+                            this.classFeatures = obj.classFeatures.map(function (feature) {
+                                return new GeneralFeature(feature.name, feature.level, feature.description, feature.action);
+                            });
+                        }
+                    },
+                    addDiscipline: function () {
+                        this.disciplines.push(new Discipline());
+                    },
+                    removeDiscipline: function (discipline) {
+                        this.disciplines = this.disciplines.filter(function (item) {
+                            return item != discipline;
+                        });
+                    },
+                    addTalent: function () {
+                        this.talents.push(new Talent());
+                    },
+                    removeTalent: function (talent) {
+                        this.talents = this.talents.filter(function (item) {
+                            return item != talent;
+                        });
+                    },
+                    addSchool: function () {
+                        this.schools.push(new School());
+                    },
+                    removeSchool: function (school) {
+                        this.schools = this.schools.filter(function (item) {
+                            return item != school;
+                        });
+                    },
+                    addClassFeature: function () {
+                        this.classFeatures.push(new GeneralFeature());
+                    },
+                    removeClassFeature: function (feature) {
+                        this.classFeatures = this.classFeatures.filter(function (item) {
+                            return feature != item;
+                        });
+                    }
+                }
+            })
+
+            var School = function (name, description, features) {
+                var self = this;
+
+                self.name = name || '';
+                self.description = description || '';
+                self.features = features || [];
+
+                self.addFeature = function () {
+                    self.features.push(new GeneralFeature());
+                }
+
+                self.removeFeature = function (feature) {
+                    self.features = self.features.filter(function (item) {
+                        return item != feature;
+                    });
+                }
+
+                return self;
+            }
+
+            var GeneralFeature = function (name, level, description, action) {
+                var self = this;
+
+                self.name = name || '';
+                self.level = level || 1;
+                self.description = description || '';
+                self.action = action || '';
+
+                self.tryParseActionFromDescription = function () {
+                    if (self.action.length == 0) {
+                        if (/[rR]eaction/g.exec(self.description)) {
+                            self.action = 'reaction';
+                        }
+                        else if (/[bB]onus[ \t]+[aA]ction/g.exec(self.description)) {
+                            self.action = 'bonus action';
+                        }
+                        else if (/[aA]ction/g.exec(self.description)) {
+                            self.action = 'action';
+                        }
+                    }
+                }
+
+                return self;
+            }
+
+            var Talent = function (name, description, action) {
+                var self = this;
+
+                self.name = name || '',
+                self.description = description || '',
+                self.action = action || '',
+
+                self.tryParseActionFromDescription = function () {
+                    if (self.action.length == 0) {
+                        if (/[rR]eaction/g.exec(self.description)) {
+                            self.action = 'reaction';
+                        }
+                        else if (/[bB]onus[ \t]+[aA]ction/g.exec(self.description)) {
+                            self.action = 'bonus action';
+                        }
+                        else if (/[aA]ction/g.exec(self.description)) {
+                            self.action = 'action';
+                        }
+                        else if (/[fF]ocus/g.exec(self.description)) {
+                            self.action = 'focus';
+                        }
+                    }
+                }
+
+                return self;
+            }
+
+            var Discipline = function (name, school, description, focus, features) {
+                var self = this;
+
+                self.name = name || '';
+                self.school = school || '';
+                self.features = features || [];
+                self.description = description || '';
+                self.focus = focus || '';
+
+                self.addFeature = function () {
+                    self.features.push(new DisciplineFeature());
+                }
+                self.removeFeature = function (feature) {
+                    self.features = self.features.filter(function (item) {
+                        return item != feature;
+                    });
+                }
+
+                return self;
+            }
+
+            var DisciplineFeature = function (name, action, cost, description) {
+                var self = this;
+
+                self.name = name || '';
+                self.action = action || '';
+                self.cost = cost || '';
+                self.description = description || '';
+
+                self.tryParseActionFromDescription = function () {
+                    if (self.action.length == 0) {
+                        if (/[rR]eaction/g.exec(self.description)) {
+                            self.action = 'reaction';
+                        }
+                        else if (/[bB]onus[ \t]+[aA]ction/g.exec(self.description)) {
+                            self.action = 'bonus action';
+                        }
+                        else if (/[aA]ction/g.exec(self.description)) {
+                            self.action = 'action';
+                        }
+                        else if (/[fF]ocus/g.exec(self.description)) {
+                            self.action = 'focus';
+                        }
+                    }
+
+                    if (self.name.length == 0) {
+                        var result = /((?:\w+[\t ]+)+)(?:\((?:(\d(?:.\d)?)[ \t]psi(?:;?))(?:[\t ]?(conc)\.?\,)?(?:[\t ](\d.+)\.)?\))\./g.exec(self.description)
+                        if (result && result.length == 5) {
+                            self.name = result[1];
+                            self.cost = result[2] + ' ' + result[3] + ' ' + result[4];
+                            self.description = self.description.substr(result[0].length);
+                        }
+                    }
+                }
+
+                return self;
+            }
+        })();
+    </script>
+</body>
+</html>

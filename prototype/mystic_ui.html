@@ -1,0 +1,178 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="bound-context" class="container">
+
+        <div class="row">
+            <div class="col-12">
+                
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-12">
+                <div>
+                    <button type="button" v-on:click="showDisciplines = !showDisciplines">Disciplines</button>
+                    <div v-for="discipline in allDisciplines" v-show="showDisciplines">
+                        <input type="checkbox" v-model="discipline.selected" v-on:click="discipline.selected = true; refreshSelectedDisciplines()" />
+                        <button type="button" v-on:click="discipline.showDetails = !discipline.showDetails">{{discipline.name}}</button>
+                        <div v-for="feature in discipline.features" v-show="discipline.showDetails">
+                            {{feature.name}} - {{feature.cost}} - {{feature.desc}}
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Focuses:</h3>
+                <div v-for="feature in focuses">
+                    <div v-on:click="feature.showDesc = !feature.showDesc" class="feature">
+                        {{feature.name}} {{feature.cost}}
+                    </div>
+                    <div class="feature-description" v-show="feature.showDesc">{{feature.desc}}</div>
+                </div>
+
+                <h3>Actions:</h3>
+                <div v-for="feature in actions">
+                    <div v-on:click="feature.showDesc = !feature.showDesc" class="feature">
+                        {{feature.name}} <span v-show="feature.cost"> {{feature.cost}} Psi </span>
+                    </div>
+                    <div class="feature-description" v-show="feature.showDesc">{{feature.desc}}</div>
+                </div>
+
+                <h3>Bonus Actions:</h3>
+                <div v-for="feature in bonusActions">
+                    <div v-on:click="feature.showDesc = !feature.showDesc" class="feature">
+                        {{feature.name}} {{feature.cost}}
+                    </div>
+                    <div class="feature-description" v-show="feature.showDesc">{{feature.desc}}</div>
+                </div>
+
+                <h3>Reactions:</h3>
+                <div v-for="feature in reactions">
+                    <div v-on:click="feature.showDesc = !feature.showDesc" class="feature">
+                        {{feature.name}} {{feature.cost}}
+                    </div>
+                    <div class="feature-description" v-show="feature.showDesc">{{feature.desc}}</div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var vm = {};
+        $(document).ready(function () {
+
+            vm = new Vue({
+                el: '#bound-context',
+                data: {
+                    currentFocus: null,
+                    focuses: [],
+                    actions: [],
+                    bonusActions: [],
+                    reactions: [],
+                    selectedDisciplines: [],
+                    selectedTalents: [],
+                    test: false,
+                    showDisciplines: true,
+
+                    allDisciplines: [],
+
+                    input: {},
+                },
+                mounted: function () {
+                    this.rawDisciplines = JSON.parse(data);
+                    this.allDisciplines = this.rawDisciplines.map(function (item) {
+                        return {
+                            name: item.name,
+                            features: item.features,
+                            showDetails: false,
+                            selected: false,
+                            discipline: item,
+                        }
+                    });
+                    this.refreshSelectedDisciplines();
+                },
+                methods: {
+                    refreshSelectedDisciplines: function () {
+                        var self = this;
+                        this.selectedDisciplines = this.allDisciplines.filter(function (item) {
+                            return !!item.selected;
+                        });
+
+                        var hash = {};
+                        this.selectedDisciplines.forEach(function (discipline) {
+                            discipline.features.forEach(function (feature) {
+                                hash[feature.type] = hash[feature.type] || [];
+                                hash[feature.type] = hash[feature.type].concat({
+                                    name: feature.name,
+                                    type: feature.type,
+                                    cost: feature.cost,
+                                    desc: feature.desc,
+                                    showDesc: false,
+                                    discipline: discipline,
+                                });
+                            });
+                        });
+
+                        this.focuses = hash['focus'];
+                        this.actions = hash['action'];
+                        this.bonusActions = hash['bonus action'];
+                        this.reactions = hash['reaction'];
+                    },
+                    addFeature: function () {
+                        var self = this;
+                        var discipline = this.allDisciplines.filter(function (item) {
+                            return item.name == self.input.disciplineName;
+                        })
+
+                        if (!discipline.length) {
+                            var addingDiscipline = true;
+                            discipline = {
+                                name: this.input.disciplineName,
+                                features: [],
+                            };
+                        } else {
+                            discipline = discipline[0];
+                        }
+
+
+                        discipline.features = discipline.features.concat({
+                            name: this.input.featureName,
+                            cost: this.input.inputCost,
+                            type: this.input.inputType,
+                            desc: this.input.inputDesc,
+                        });
+
+
+                        if (addingDiscipline) {
+                            this.allDisciplines = this.allDisciplines.concat(discipline);
+                        }
+
+                        this.input.inputName = this.input.inputCost = this.input.inputType = this.input.inputDesc = '';
+                        this.refreshSelectedDisciplines();
+                    },
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        var data = '[{"name":"Nomadic Step","features":[{"name":"Psychic Focus.","type":"focus","desc":". After you teleport on your turn  while focused on this discipline, your walking  speed increases by 10 feet until the end of the  turn, as you are propelled by the magic of your  teleportation. You can receive this increase only once per turn."},{"name":"Step of a Dozen Paces","cost":"1-7","type":"bonus action","desc":"If you haven’t  moved yet on your turn, you take a bonus action to teleport up to 20 feet per psi point spent to an  unoccupied space you can see, and your speed is reduced to 0 until the end of the turn"},{"name":"Nomadic Anchor","cost":"1","type":"action","desc":"As an action, you  create an invisible, intangible teleportation anchor in a 5-foot cube you can see within 120  feet of you. For the next 8 hours, whenever you  use this psionic discipline to teleport, you can  instead teleport to the anchor, even if you can’t see it, but it must be within range of the teleportation ability"},{"name":"Defensive Step","cost":"2","type":"reaction","desc":"When you are hit by an  attack, you can use your reaction to gain a +4  bonus to AC against that attack, possibly turning  it into a miss. You then teleport up to 10 feet to  an unoccupied space you can see."},{"name":"There and Back Again ","cost":"2","type":"bonus action","desc":"As a bonus  action, you teleport up to 20 feet to an  unoccupied space you can see and then move up  to half your speed. At the end of your turn, you  can teleport back to the spot you occupied  before teleporting, unless it is now occupied or  on a different plane of existence."},{"name":"Transposition","cost":"3","type":"bonus action","desc":"If you haven’t moved  yet on your turn, choose an ally you can see  within 60 feet of you. As a bonus action, you and  that creature teleport, swapping places, and your  speed is reduced to 0 until the end of the turn.  This ability fails and is wasted if either of you  can’t fit in the destination space"},{"name":"Baleful Transposition ","cost":"5","type":"action","desc":"As an action,  choose one creature you can see within 120 feet  of you. That creature must make a Wisdom  saving throw. On a failed save, you and that  creature teleport, swapping places. This ability  fails and is wasted if either of you can’t fit in the  destination space."},{"name":"Phantom Caravan","cost":"6","type":"action","desc":"As an action, you and up to six willing creatures of your choice  that you can see within 60 feet of you teleport up  to 1 mile to a spot you can see. If there isn’t an  open space for all the targets to occupy at the  arrival point, this ability fails and is wasted."},{"name":"Nomad’s Gate","cost":"7","type":"action","desc":"conc. 1hr As an  action, you create a 5-foot cube of dim, gray light within 5 feet of you. You create an identical cube at any point of your choice within 1 mile that you  have viewed within the past 24 hours. Until your  concentration ends, anyone entering one of the  cubes immediately teleports to the other one,  appearing in an unoccupied space next to it. The teleportation fails if there is no space for the  creature to appear in."}]},{"name":"Nomadic Mind","features":[{"name":"Psychic Focus.","type":"focus","desc":". Whenever you focus on this  discipline, you choose one skill or tool and have  proficiency with it until your focus ends.  Alternatively, you gain the ability to read and  write one language of your choice until your  focus ends"},{"name":"Wandering Mind","cost":"2-6","type":"action","desc":"conc. 10min.  You enter a deep contemplation. If you  concentrate for this option’s full duration, you  then gain proficiency with up to three of the  following skills (one skill for every 2 psi points  spent): Animal Handling, Arcana, History,  Medicine, Nature, Performance, Religion, and  Survival. The benefit lasts for 1 hour, no  concentration required."},{"name":"Find Creature","cost":"2","type":"action","desc":"conc. 1hr. You cast your mind about for information about a specific  creature. If you concentrate for this option’s full  duration, you then gain a general understanding of the creature’s current location. You learn the  region, city, town, village, or district where it is,  pinpointing an area between 1 and 3 miles on a  side (DM’s choice). If the creature is on another  plane of existence, you instead learn which  plane."},{"name":"Item Lore","cost":"3","type":"action","desc":"conc., 1 hr.). You carefully study an item. If you concentrate for this option’s  full duration while remaining within 5 feet of the  item, you then gain the benefits of an identify spell cast on that item."},{"name":"Psychic Speech","cost":"5","type":"action","desc":". As an action, you  attune your mind to the psychic imprint of all  language. For 1 hour, you gain the ability to  understand any language you hear or attempt to  read. In addition, when you speak, all creatures  that can understand a language understand what  you say, regardless of what language you use"},{"name":"Wandering Eye","cost":"6","type":"action","desc":" conc., 1 hr.). As an  action, you create a psychic sensor within 60 feet  of you. The sensor lasts until your concentration  ends. The sensor is invisible and hovers in the  air. You mentally receive visual information from  it, which has normal vision and darkvision with a  range of 60 feet. The sensor can look in all  directions. As an action, you can move the sensor  up to 30 feet in any direction. There is no limit to  how far away from you the eye can move, but it  can’t enter another plane of existence. A solid  barrier blocks the eye’s movement, but the eye  can pass through an opening as small as 1 inch in  diameter."},{"name":"Phasing Eye","cost":"7","type":"action","desc":"conc., 1 hr.). As an  action, you create a psychic sensor within 60 feet  of you. The sensor lasts until your concentration  ends. The sensor is invisible and hovers in the  air. You mentally receive visual information from  it, which has normal vision and darkvision with a  range of 60 feet. The sensor can look in all  directions. As an action, you can move the sensor  up to 30 feet in any direction. There is no limit to  how far away from you the eye can move, but it  can’t enter another plane of existence. Wandering Eye above, except the eye can move  through solid objects but can’t end its movement  in one. If it does so, the effect immediately ends."}]},{"name":"Bestial Form","features":[{"name":"Psychic Focus","cost":"","type":"focus","desc":"While focused on this  discipline, you have advantage on Wisdom  (Animal Handling) checks."},{"name":"Bestial Claws ","cost":"1-7","type":"action","desc":"You manifest long  claws for an instant and make a melee weapon  attack against one creature within 5 feet of you.  On a hit, this attack deals 1d10 slashing damage  per psi point spent."},{"name":"Bestial Transformation.","cost":"","type":"bonus action","desc":"As a bonus action,  you alter your physical form to gain different  characteristics. When you use this ability, you  can choose one or more of the following effects.  Each effect has its own psi point cost. Add them  together to determine the total cost. This  transformation lasts for 1 hour, until you die, or  until you end it as a bonus action. Amphibious (2 psi). You gain gills; you can  breathe air and water. Climbing (2 psi). You grow tiny hooked claws  that give you gain a climbing speed equal to  your walking speed. Flight (5 psi). Wings sprout from your back. You  gain a flying speed equal to your walking  speed. Keen Senses (2 psi). Your eyes and ears become  more sensitive. You gain advantage on Wisdom  (Perception) checks. Perfect Senses (3 psi). You gain a keen sense of  smell and an instinct to detect prey. You can  see invisible creatures and objects within 10  feet of you, even if you are blinded. Swimming (2 psi). You gain fins and webbing  between your fingers and toes; you gain a  swimming speed equal to your walking speed. Tough Hide (2 psi). Your skin becomes as tough  as leather; you gain a +2 bonus to AC."}]},{"name":"Mastery of Weather","features":[{"name":"Psychic Focus","cost":"","type":"focus","desc":"While focused on this  discipline, you have resistance to lightning and  thunder damage."},{"name":"Cloud Steps","cost":"1-7","type":"action","desc":"conc., 10 min.). As an  action, you conjure forth clouds to create a solid,  translucent staircase that lasts until your  concentration ends. The stairs form a spiral that  fills a 10-foot-by-10-foot area and reaches  upward 20 feet per psi point spent."},{"name":"Hungry Lightning","cost":"1-7","type":"action","desc":"As an action, you  lash out at one creature you can see within 60  feet of you with tendrils of lightning. The target  must make a Dexterity saving throw, with  disadvantage if it’s wearing heavy armor. The  target takes 1d8 lightning damage per psi point  spent on a failed save, or half as much damage on  a successful one"},{"name":"Wall of Clouds ","cost":"2","type":"action","desc":"As an  action, you create a wall of clouds, at least one  portion of which must be within 60 feet of you.  The wall is 60 feet long, 15 feet high, and 1 foot  thick. The wall lasts until your concentration  ends. Creatures can pass through it without  hindrance, but the wall blocks vision"},{"name":"Whirlwind","cost":"2","type":"action","desc":"As an action, choose a  point you can see within 60 feet of you. Winds  howl in a 20-foot-radius sphere centered on that  point. Each creature in the sphere must succeed  on a Strength saving throw or take 1d6  bludgeoning damage and be moved to an  unoccupied space of your choice in the sphere. Any loose object in the sphere is moved to an  unoccupied space of your choice within it if the  object weighs no more than 100 pounds."},{"name":"Lightning Leap","cost":"5","type":"action","desc":"As an action, you let  loose a line of lightning that is 60 feet long and 5  feet wide. Each creature in the line must make a  Dexterity saving throw, taking 6d6 lightning  damage on a failed save, or half as much damage on a successful one. You can then teleport to an unoccupied space touched by the line. You can increase this ability’s damage by 1d6  per additional psi point spent on it."},{"name":"Wall of Thunder","cost":"6","type":"action","desc":" conc., 10 min.). As an  action, you create a wall of thunder, at least one  portion of which must be within 60 feet of you.  The wall is 60 feet long, 15 feet high, and 1 foot  thick. The wall lasts until your concentration  ends. Every foot moved through the wall costs 1  extra foot of movement. When a creature moves  into the wall’s space for the first time on a turn  or starts its turn there, that creature must  succeed on a Strength saving throw, or it takes  6d6 thunder damage, is pushed in a straight line  up to 30 feet away from the wall, and is knocked  prone"},{"name":"Thunder Clap","cost":"7","type":"action","desc":"As an action, choose a  point you can see within 60 feet of you. Thunder  energy erupts in a 20-foot-radius sphere centered on that point. Each creature in that area  must make Constitution saving throw. On a  failed save, a target takes 8d6 thunder damage, and it is stunned until the end of your next turn.  On a successful save, a target takes half as much  damage."},{"name":"Ice Spike","cost":"1-7","type":"action","desc":". As an action, you hurl a  mote of ice at one creature you can see within  120 feet of you. The target must make a  Dexterity saving throw. On a failed save, the  target takes 1d8 cold damage per psi point spent  and has its speed halved until the start of your  next turn. On a successful save, the target takes  half as much damage"}]},{"name":"Mastery of Ice","features":[{"name":"Psychic Focus","cost":"","type":"focus","desc":"While focused on this  discipline, you have resistance to cold damage."},{"name":"Ice Sheet ","cost":"2","type":"action","desc":"As an action, choose a point  on the ground you can see within 60 feet of you.  The ground in a 20-foot radius centered on that  point becomes covered in ice for 10 minutes. It is  difficult terrain, and any creature that moves  more than 10 feet on it must succeed on a  Dexterity saving throw or fall prone. If the  surface is sloped, a creature that falls prone in  the area immediately slides to the bottom of the  slope"},{"name":"Frozen Sanctuary","cost":"3","type":"bonus action","desc":"As a bonus action,  you sheathe yourself with icy resilience. You gain  20 temporary hit points."},{"name":"Frozen Rain","cost":"5","type":"action","desc":"conc., 1 min.). As an  action, choose a point you can see within 120  feet of you. The air in a 20-foot-radius sphere  centered on that point becomes deathly cold and  saturated with moisture. Each creature in that  area must make a Constitution saving throw. On  a failed save, a target takes 6d6 cold damage, and  its speed is reduced to 0 until your concentration  ends. On a successful save, a target takes half as  much damage. As an action, a target that has its speed  reduced can end the effect early if it succeeds on  a Strength (Athletics) check with a DC equal to  this effect’s save DC. You can increase this effect’s damage by 1d6  per each additional psi point spent on it."},{"name":"Ice Barrier","cost":"6","type":"action","desc":"conc., 10 min.). As an  action, you create a wall of ice, at least one  portion of which must be within 60 feet of you.  The wall is 60 feet long, 15 feet high, and 1 foot  thick. The wall lasts until your concentration  ends. Each 10-foot section of the wall has AC 12  and 30 hit points. A creature that damages the  wall with a melee attack takes cold damage equal  to the damage the creature dealt to the wall."}]},{"name":"Nomadic Arrow","features":[{"name":"Psychic Focus","type":"focus","desc":"While you are focused on this  discipline, any attack roll you make for a ranged  weapon attack ignores disadvantage. If  disadvantage would normally apply to the roll,  that roll also can’t benefit from advantage"},{"name":"Speed Dart","cost":"1-7","type":"bonus action","desc":". As a bonus action, you  imbue one ranged weapon you hold with psionic  power. The next attack you make with it that hits  before the end of the current turn deals an extra 1d10 psychic damage per psi point spent."},{"name":"Seeking Missile ","cost":"2","type":"reaction","desc":"As a reaction when  you miss with a ranged weapon attack, you can  repeat the attack roll against the same target."},{"name":"Faithful Archer ","cost":"5","type":"bonus action","desc":"conc., 1 min.). As a  bonus action, you imbue a ranged weapon with a  limited sentience. Until your concentration ends,  you can make an extra attack with the weapon at  the start of each of your turns (no action  required). If it is a thrown weapon, it returns to  your grasp each time you make any attack with  it"}]},{"name":"Brute Force","features":[{"name":"Psychic Focus.","cost":"","type":"focus","desc":"While focused on this  discipline, you have advantage on Strength  (Athletics) checks"},{"name":"Brute Strike ","cost":"1-7","type":"bonus action","desc":"As a bonus action, you  gain a bonus to your next damage roll against a  target you hit with a melee attack during the  current turn. The bonus equals +1d6 per psi  point spent, and the bonus damage is the same  type as the attack. If the attack has more than  one damage type, you choose which one to use  for the bonus damage."},{"name":"Knock Back","cost":"1-7","type":"reaction","desc":"Knock Back (1–7 psi). When you hit a target  with a melee attack, you can activate this ability  as a reaction. The target must succeed on a  Strength saving throw or be knocked 10 feet  away from you per psi point spent. The target  moves in a straight line. If it hits an object, this  movement immediately ends and the target  takes 1d6 bludgeoning damage per psi point  spent."},{"name":"Mighty Leap","cost":"1-7","type":"movement","desc":"As part of your  movement, you jump in any direction up to 20  feet per psi point spent"},{"name":"Feat of Strength","cost":"2","type":"bonus action","desc":"As a bonus action,  you gain a +5 bonus to Strength checks until the  end of your next turn."}]},{"name":"Psionic Restoration","features":[{"name":"Psychic Focus.","cost":"","type":"focus","desc":"While focused on this  discipline, you can use a bonus action to touch a  creature that has 0 hit points and stabilize it"},{"name":"Mend Wounds","cost":"1-7","type":"action","desc":"As an action, you can  spend psi points to restore hit points to one  creature you touch. The creature regains 1d8 hit  points per psi point spent"},{"name":"Restore Health ","cost":"3","type":"action","desc":"As an action, you touch  one creature and remove one of the following  conditions from it: blinded, deafened, paralyzed,  or poisoned. Alternatively, you remove one  disease from the creature"},{"name":"Restore Life ","cost":"5","type":"action","desc":"As an action, you touch  one creature that has died within the last  minute. The creature returns to life with 1 hit  point. This ability can’t return to life a creature  ©2017 Wizards of the Coast LLC 24 that has died of old age, nor can it restore a  creature missing any vital body parts"},{"name":"Restore Vigor","cost":"7","type":"action","desc":"As an action, you can  touch one creature and choose one of the  following: remove any reductions to one of its  ability scores, remove one effect that reduces its hit point maximum, or reduce its exhaustion  level by one"}]},{"name":"Nomadic Chameleon","features":[{"name":"Psychic Focus","cost":"","type":"focus","desc":". While focused on this  discipline, you have advantage on Dexterity  (Stealth) checks."},{"name":"Chameleon ","cost":"2","type":"action","desc":"As an action, you can  attempt to hide even if you fail to meet the  requirements needed to do so. At the end of the  current turn, you remain hidden only if you then  meet the normal requirements for hiding"},{"name":"Step from Sight ","cost":"3","type":"bonus action","desc":"conc., 1 min.). As a  bonus action, cloak yourself from sight. You can  target one additional creature for every  additional psi point you spend on this ability.  The added targets must be visible to you and  within 60 feet of you."},{"name":"Step from Sight ","cost":"3","type":"bonus action","desc":" conc., 1 min.). As a  bonus action, cloak yourself from sight. You can  target one additional creature for every  additional psi point you spend on this ability.  The added targets must be visible to you and  within 60 feet of you. Each target turns invisible and remains so until your concentration ends or until immediately after it targets, damages, or  otherwise affects any creature with an attack, a  spell, or another ability."},{"name":"Enduring Invisibility","cost":"7","type":"bonus action","desc":"; conc., 1 min.). As  a bonus action, you turn invisible and remain so  until your concentration ends."}]}]';
+    </script>
+</body>
+
+</html>

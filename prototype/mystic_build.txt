@@ -1,0 +1,37 @@
++2 2psi 1hr Bestial Form
++1-7 1-7PSI reaction Iron Hide
++1 focus iron durability
++1 focus wood mastery
++4 2psi reaction & teleport defensive step
+base -> 14+dex 2psi Inertial Armor 8hr
+base -> 10 + dex + con, Immortal Durability
+
+17+2+1 - 20
+20 -> 27 or 24 with reaction
+
+*14 + 3 -> 17 base from inertial armor
+15 + 2 -> 17 base from medium armor
+12 + 2 -> 14 base from light armor
+beast +2
+iron|wood +1
+react +1-7 per 1-7 or +4 per 2
+
+
+what I need:
+Bestial Form (Bestial Transformation) +2
+Iron Durability (Iron Hide, Iron Resistance) +1f +1-7r
+Mastery of Force (Inertial Armor) base 14+dex
+Nomadic Step +4 react & teleport
+
+
+focus: iron hide +1
+1 action, 2psi, inertial armor 14+dex
+1 bonus action, 2psi, bestial form +2
+reactions:
+2psi -> +4 and teleport
+5-7psi -> +5-7
+
+start battle:
+bonus action iron hide focus if not already there
+action inertial armor
+bonus action if not taken for focus on bestial form

@@ -1,0 +1,128 @@
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://vuejs.org/js/vue.js"></script>
+</head>
+<body>
+    <!-- purpose: interactive character sheet for a mystic, with import/export functionality:
+        track focus
+        track psi points, psi cap, special case usages of skills
+        track actions/bonus actions/reactions/proficiencies/skills and other things that shift randomly as a mystic
+            breakdown by action type(action, reaction, rest etc.), source(discipline, talent, etc.) -->
+
+
+
+
+    <div class="container" id="bound-context">
+        <div class="row">
+            <div class="col-12">
+                schools
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h4 class="card-title float-left">Disciplines</h4>
+                        <button type="button" class="btn btn-primary" v-on:click="showDisciplines = !showDisciplines">+</button>
+                    </div>
+                    <div class="card-body" v-show="showDisciplines">
+                        <div class="card" v-for="discipline in disciplines">
+                            <div class="card-body">
+                                <div class="text-right">
+                                    <h6 class="float-left text-left">
+                                        {{discipline.data.name}}<br />
+                                        <span class="text-muted">{{discipline.data.school}}</span>
+                                    </h6>
+                                    <button type="button" class="btn btn-primary" v-on:click="discipline.showDetails = !discipline.showDetails">+</button>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div v-show="discipline.showDetails">
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title">Focus</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            {{discipline.data.focus}}
+                                        </div>
+                                    </div>
+
+                                    <div class="card" v-for="feature in discipline.data.features">
+                                        <div class="card-header">
+                                            <h6 class="card-title">{{feature.name}}: {{feature.action}} {{feature.cost}} </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            {{feature.description}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h4 class="card-title float-left">Talents</h4>
+                        <button type="button" class="btn btn-primary" v-on:click="showTalents = !showTalents">+</button>
+                    </div>
+                    <div class="card-body" v-show="showTalents">
+                        body
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-right">
+                        <h4 class="card-title float-left">Schools</h4>
+                        <button class="btn btn-primary" v-on:click="showSchools = !showSchools">+</button>
+                    </div>
+                    <div class="card-body" v-show="showSchools">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#bound-context',
+            data: {
+                mysticData: {},
+
+                showDisciplines: false,
+                disciplines: [],
+
+                showTalents: false,
+                talents: [],
+
+                showSchools: false,
+            },
+            computed: {},
+            mounted: function () {
+            },
+            methods: {
+                selectSchool: function (school) { },
+                selectTalent: function (talent) { },
+                unselectTalent: function (talent) { },
+                toggleDiscipline: function (discipline) { },
+            }
+        })
+
+
+    </script>
+</body>
+</html>
