@@ -37,7 +37,7 @@
                     <p class="card-text content-text">
                         <template v-for="contentItem in entryViewer.contentList">
                             <span v-if="contentItem.length">{{contentItem}}</span>
-                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)">{{contentItem.name}}</button>
+                            <button v-else type="button" class="btn btn-inline" v-on:click="linkViewerLoad(contentItem, $event.pageX, $event.pageY)" v-bind:class="getLinkButtonClass(contentItem.type)">{{contentItem.name}}</button>
                         </template>
                     </p>
 
@@ -62,7 +62,7 @@
                         <button type="button" class="btn btn-secondary" v-on:click="editorCancel">Cancel</button>
                     </div>
 
-                    <button type="button" class="btn btn-secondary btn-inline mr-1 mb-1" v-for="link in editor.parsedLinks" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)">
+                    <button type="button" class="btn btn-inline mr-1 mb-1" v-for="link in editor.parsedLinks" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)" v-bind:class="getLinkButtonClass(link.type)">
                         {{link.name}}
                     </button>
                 </div>
@@ -77,7 +77,7 @@
                 <div class="card-body">
                     <h4 class="card-title">{{linkType}}</h4>
 
-                    <button type="button" class="btn btn-secondary mr-1 mb-1 btn-inline" v-for="link in linkList.linkTypeTree[linkType]" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)">
+                    <button type="button" class="btn mr-1 mb-1 btn-inline" v-for="link in linkList.linkTypeTree[linkType]" v-on:click="linkViewerLoad(link, $event.pageX, $event.pageY)" v-bind:class="getLinkButtonClass(link.type)">
                         {{link.name}}
                     </button>
                 </div>
@@ -102,7 +102,7 @@
                     <p class="card-text content-text">
                         <template v-for="contentItem in linkViewer.contentList">
                             <span v-if="contentItem.length">{{contentItem}}</span>
-                            <button v-else type="button" class="btn btn-secondary btn-inline" v-on:click="linkViewerLoad(contentItem)">{{contentItem.name}}</button>
+                            <button v-else type="button" class="btn btn-inline" v-on:click="linkViewerLoad(contentItem)" v-bind:class="getLinkButtonClass(contentItem.type)">{{contentItem.name}}</button>
                         </template>
                     </p>
 

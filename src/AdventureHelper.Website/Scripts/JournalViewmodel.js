@@ -321,5 +321,77 @@ var vm = new Vue({
             console.debug('start-new-link');
             this.linkEditorLoad({}, x, y);
         },
+
+        getLinkButtonClass: function (type) {
+            var linkTypeIndex = this.linkList.linkTypes.indexOf(type);
+            if (linkTypeIndex < 0)
+                return 'btn-secondary';
+
+            //lets do some known ones
+            var knownTypes = {
+                'quest(open)': 'btn-danger',
+                'quest(closed)': 'btn-outline-danger',
+                'location': 'btn-success',
+                'character': 'btn-info'
+            }
+            if (knownTypes[type]) {
+                return knownTypes[type];
+            }
+
+
+
+
+            var hash = 0, i, chr;
+            //if (type.length === 0) return hash;
+            for (i = 0; i < type.length; i++) {
+                chr = type.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
+                hash |= 0; 
+            }
+
+            var buttonClasses = [
+                'btn-primary',
+                //'btn-secondary',
+                'btn-success',
+                'btn-danger',
+                'btn-warning',
+                'btn-info',
+                'btn-dark',
+
+                'btn-outline-primary',
+                'btn-outline-secondary',
+                'btn-outline-success',
+                'btn-outline-danger',
+                'btn-outline-info',
+                'btn-outline-dark',
+            ];
+
+            return buttonClasses[Math.abs(hash) % buttonClasses.length];
+
+
+            var colors = [{"background":"#bfd4f2","text":"#000000"},{"background":"#d93f0b","text":"#ffffff"},{"background":"#1d76db","text":"#ffffff"},{"background":"#0052cc","text":"#ffffff"},{"background":"#f9d0c4","text":"#000000"},{"background":"#bfdadc","text":"#000000"},{"background":"#5319e7","text":"#ffffff"},{"background":"#c5def5","text":"#000000"},{"background":"#b60205","text":"#ffffff"},{"background":"#fef2c0","text":"#000000"},{"background":"#0e8a16","text":"#ffffff"},{"background":"#e99695","text":"#000000"},{"background":"#c2e0c6","text":"#000000"},{"background":"#fbca04","text":"#ffffff"},{"background":"#d4c5f9","text":"#000000"},{"background":"#006b75","text":"#ffffff"}]
+
+            var colors = [
+                { background: '#b60205', text: '#ffffff' },
+                { background: '#d93f0b', text: '#ffffff' },
+                { background: '#fbca04', text: '#ffffff' },
+                { background: '#0e8a16', text: '#ffffff' },
+                { background: '#006b75', text: '#ffffff' },
+                { background: '#1d76db', text: '#ffffff' },
+                { background: '#0052cc', text: '#ffffff' },
+                { background: '#5319e7', text: '#ffffff' },
+                { background: '#e99695', text: '#000000' },
+                { background: '#f9d0c4', text: '#000000' },
+                { background: '#fef2c0', text: '#000000' },
+                { background: '#c2e0c6', text: '#000000' },
+                { background: '#bfdadc', text: '#000000' },
+                { background: '#c5def5', text: '#000000' },
+                { background: '#bfd4f2', text: '#000000' },
+                { background: '#d4c5f9', text: '#000000' }];
+
+            var color = colors[linkTypeIndex % colors.length];
+            return 'background-color: ' + color.background + ';color: ' + color.text + ';';
+        },
     }
 });
+
